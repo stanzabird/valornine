@@ -1,0 +1,23 @@
+---
+author: John Doe
+email: john@doe.org
+---
+
+{% project "my-example" %}
+
+{% file "README.txt" %}
+This is just an example file.
+{% endfile %}
+
+{% file "hello.c" %}
+#include <stdio.h>
+
+int main()
+{
+  printf("Hi, I'm {{ author }} and my email is {{ email }}\n");
+  return 0;
+}
+{% endfile %}
+
+{% endproject %}
+

@@ -1,0 +1,19 @@
+{% project "foo" %}
+
+{% file "${pn}.txt" %}
+Hi there,
+
+{% module foo %}
+This is only visible with module foo enabled.
+{% endmodule %}
+
+{% endfile %}
+
+
+{% module foo %}
+  {% file "hello.txt"%}
+    Hello, world
+  {% endfile %}
+{% endmodule %}
+
+{% endproject %}

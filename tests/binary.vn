@@ -1,0 +1,38 @@
+{% project "foo" %}
+{% file snippet foot "aFoot.txt" %}
+{% file binary mybin "my.bin" %}
+{% file "bagger.txt" %}{%raw%}
+{% project "bar" %}
+{% file binary mybin "my.bin" %}
+{% endproject %}
+{%endraw%}{%endfile%}
+{% endproject %}
+
+{% snippet foot %}Hello, world{% endsnippet %}
+
+{% binary mybin %}
+7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 01 00 3e 00 01 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 98 bd 01 00 00 00 00 00 00 00 00 00
+40 00 00 00 00 00 40 00 1a 00 17 00 01 00 00 00 06 00 00 00 00 00 00 00 00 00
+00 00 41 57 41 56 41 55 41 54 49 89 fc 55 53 48 83 ec 08 4c 8b 2f 48 8b 47 08
+49 8d 5c 05 00 48 c1 f8 02 4d 89 ef 48 85 c0 49 89 de 0f 8e 1f 01 00 00 48 c1
+e0 02 48 89 dd 48 29 c5 eb 34 0f 1f 40 00 0f be 7b fe e8 00 00 00 00 85 c0 74
+63 0f be 7b fd e8 00 00 00 00 85 c0 74 66 0f be 7b fc e8 00 00 00 00 85 c0 74
+69 48 83 eb 04 48 39 dd 74 70 0f be 7b ff e8 00 00 00 00 85 c0 75 c3 48 89 de
+49 89 df 4c 29 ee 4c 89 f2 4c 89 e7 4c 29 fa e8 00 00 00 00 48 83 c4 08 4c 89
+e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 eb 01
+48 89 de 49 89 df 4c 29 ee eb c7 90 48 83 eb 02 48 89 de 49 89 df 4c 29 ee eb
+b7 90 48 83 eb 03 eb a7 66 2e 0f 1f 84 00 00 00 00 00 48 89 eb 48 89 d8 4c 29
+e8 48 83 f8 02 74 40 48 83 f8 03 74 29 31 f6 48 83 f8 01 75 89 0f be 7d ff e8
+00 00 00 00 31 f6 85 c0 0f 85 76 ff ff ff 48 89 ee 49 89 ef 4c 29 ee e9 68 ff
+ff ff 0f be 7d ff e8 00 00 00 00 85 c0 74 17 48 83 ed 01 0f be 7d ff e8 00 00
+00 00 85 c0 74 d4 48 83 ed 01 eb bb 49 89 df be 03 00 00 00 e9 37 ff ff ff 48
+89 dd eb 8f 66 90 66 2e 0f 1f 84 00 00 00 00 00 53 48 89 fb 48 8b 3f ba 00 00
+00 00 48 83 ec 08 48 89 fe 48 03 73 08 6a 00 e8 00 00 00 00 48 2b 03 48 89 df
+31 f6 5a 59 48 89 c2 e8 00 00 00 00 48 89 d8 5b c3 90 66 2e 0f 1f 84 00 00 00
+00 00 48 83 ec 08 e8 00 00 00 00 48 83 c4 08 48 89 c7 eb ae 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 41 55 41 54 49 89 f5 55 48 89 d5 48 89 f2 48 29 fa 53
+48 89 fb 48 89 d0 48 c1 f8 02 48 83 ec 08 48 85 c0 7e 61 4c 8d 24 87 eb 34 0f
+1f 44 00 00 0f be 7b 01 ff d5 85 c0 74 76 0f be 7b 02 ff d5 85 c0 0f 84 a0 00
+{% endbinary %}
+

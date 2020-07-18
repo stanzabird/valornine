@@ -1,0 +1,13 @@
+{% project "foo" %}
+{% file "init.h" %}
+#ifdef INCLUDED_{{ project_name | upcase }}_{{ name | upcase }}_H
+#define INCLUDED_{{ project_name | upcase }}_{{ name | upcase }}_H
+
+int {{ project_name | downcase }}_init();
+void {{ project_name | downcase }}_done(int handle);
+
+/* the value of project_name is: {{ project_name }} */
+/* the value of name is: {{ name }} */
+#endif
+{% endfile %}
+{% endproject %}

@@ -1,0 +1,43 @@
+---
+email: john.doe@example.com
+git_username: jdoe
+---
+
+{% project "c-basic" %}
+
+{% file "configure.ac" %}
+AC_INIT([{{project_name}}], [0.1.0], [{{email}}], [], [https://github.com/{{git_username}}/{{project_name}}/])
+AC_CONFIG_SRCDIR({{project_name}}.c)
+AC_PREREQ(2.59)
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+
+AC_PROG_CC
+
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT
+{% endfile %}
+
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+
+bin_PROGRAMS = {{ project_name }}
+{{ project_name }}_SOURCES = {{ project_name}}.c
+{% endfile %}
+
+{% file "${pn}.c" %}
+#include <config.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int
+main(int argc, char* argv[])
+{
+  printf("Hello, world!\n");
+  return 0;
+}
+{% endfile %}
+
+{% endproject %}
