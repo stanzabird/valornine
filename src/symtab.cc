@@ -1,6 +1,6 @@
 #include "symtab.h"
 
-
+#include <stdexcept>
 
 
 void SymTab::parse_name(std::string name, std::string& varname, std::string& membername)
