@@ -4,11 +4,127 @@
 
 {% json identity %}
 {
-  { "author" : "Bert van der Weerd" },
+  { "author" : "Bert van der Weerd ☺" },
   { "email" : "bert@stanzabird.nl" },
   { "gitname" : "stanzabird" }
 }
 {% endjson %}
+
+
+{%comment%} Some more utf8 testing... {%endcomment%}
+{%project"smiley"%}{%file"☺"%}{%endfile%}{%endproject%}
+
+
+
+
+
+{% comment %}
+
+  This project "minimal.gtk4.c" shows possible things to do
+  in the future, perhaps gtk4 with gtkglarea+opengl-es/vulkan.
+
+  Another thing, BOOST SUPPORT. I neeeeds my boost.asio!
+
+{% endcomment %}
+
+
+{% project "minimal.gtk4.c" %}
+
+  {% comment %}
+    GKT4 + autoconf + c
+    - this is how the old style projects work, without the template stuff.
+  {% endcomment %}
+
+{% file "configure.ac" %}
+AC_INIT([{{self.project_name}}], [0.1.0], [{{identity.email}}], [], [https://github.com/{{identity.gitname}}/{{self.project_name}}/])
+AC_CONFIG_SRCDIR({{self.project_name}}.c)
+AC_PREREQ(2.59)
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+AC_PROG_CC
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT
+{% endfile %}
+
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+bin_PROGRAMS = {{project_name}}
+{{self.project_name}}_SOURCES = {{self.project_name}}.c
+{{self.project_name}}_CPPFLAGS = `pkg-config --cflags gtk4`
+{{self.project_name}}_LDFLAGS = `pkg-config --libs gtk4`
+{% endfile %}
+
+{% file "{{self.projectname}}.c" %}
+#include <gtk/gtk.h>
+
+static void
+print_hello (GtkWidget *widget,
+	     gpointer   data)
+{
+  g_print ("Hello World\n");
+}
+
+static void
+activate (GtkApplication *app,
+	  gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *button, *button2;
+  GtkWidget *box, *box2, *box3;
+
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "HEYYYY");
+  gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
+
+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+  box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  box3 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  
+  gtk_window_set_child (GTK_WINDOW (window), box3);
+
+  button = gtk_button_new_with_label ("Hello World");
+  button2 = gtk_button_new_with_label ("i am button 2");
+  
+  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+  g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_window_destroy), window);
+  gtk_box_append (GTK_BOX (box), button);
+  gtk_box_append (GTK_BOX (box2), button2);
+  gtk_box_append (GTK_BOX (box3), box2);
+  gtk_box_append (GTK_BOX (box3), box);
+
+  gtk_widget_show (window);
+}
+
+int
+main (int    argc,
+      char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+{% endfile %}
+{% endproject %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -151,7 +267,8 @@ AC_PROG_CXX
 
 {% template "deep.getopt.c"      extends "automake.deep"    extends "c"   %}
 {% multiline extra_dist %}
-EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c vs/{{self.project_name}}.sln vs/{{self.project_name}}.vcxproj vs/{{self.project_name}}.vcxproj.filters vs/{{self.project_name}}.vcxproj.user
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c \
+  vs/{{self.project_name}}.sln vs/{{self.project_name}}.vcxproj vs/{{self.project_name}}.vcxproj.filters vs/{{self.project_name}}.vcxproj.user
 {% endmultiline %}
 
   {% file snippet getopt_main_h   "src/{{self.project_name}}.h"  %}
@@ -202,6 +319,19 @@ EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
 
 
 
+
+
+
+
+
+
+
+
+{% comment %}
+   --------------------------------------------------------------------------------
+   --- BEGIN SNIPPETS
+   --------------------------------------------------------------------------------
+{% endcomment %}
 
 
 
