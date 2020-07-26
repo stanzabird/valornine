@@ -139,34 +139,31 @@ AC_PROG_CXX
 
 
 
-
-
-
-
-
-
-
 {% template "shallow.getopt.c"   extends "automake.shallow" extends "c"   %}
-  {% file snippet getopt_main_h   "${self.project_name}.h"      %}
-  {% file snippet getopt_main_c   "${self.project_name}.c"      %}
+  {% file snippet getopt_main_h   "{{self.project_name}}.h"      %}
+  {% file snippet getopt_main_c   "{{self.project_name}}.c"      %}
 {% endtemplate %}
 
 {% template "shallow.getopt.c++" extends "automake.shallow" extends "c++" %}
-  {% file snippet getopt_main_hxx "${self.project_name}.h"      %}
-  {% file snippet getopt_main_cxx "${self.project_name}.cc"     %}
+  {% file snippet getopt_main_hxx "{{self.project_name}}.h"      %}
+  {% file snippet getopt_main_cxx "{{self.project_name}}.cc"     %}
 {% endtemplate %}
 
 {% template "deep.getopt.c"      extends "automake.deep"    extends "c"   %}
 {% multiline extra_dist %}
-EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c vs/{{self.project_name}}.sln vs/{{self.project_name}}.vcxproj vs/{{self.project_name}}.vcxproj.filters vs/{{self.project_name}}.vcxproj.user
 {% endmultiline %}
 
-  {% file snippet getopt_main_h   "src/${self.project_name}.h"  %}
-  {% file snippet getopt_main_c   "src/${self.project_name}.c"  %}
+  {% file snippet getopt_main_h   "src/{{self.project_name}}.h"  %}
+  {% file snippet getopt_main_c   "src/{{self.project_name}}.c"  %}
   {% module "vs" %}
-    {% file snippet vs_getopt_h "vs/src/getopt.h" %}
-    {% file snippet vs_getopt_c "vs/src/getopt.c" %}
-    {% file snippet vs_getopt_long_c "vs/src/getopt_long.c" %}
+    {% file snippet vs_getopt_h            "vs/src/getopt.h" %}
+    {% file snippet vs_getopt_c            "vs/src/getopt.c" %}
+    {% file snippet vs_getopt_long_c       "vs/src/getopt_long.c" %}
+    {% file snippet vsproj_sln             "vs/{{self.project_name}}.sln" %}
+    {% file snippet vsproj_vcxproj         "vs/{{self.project_name}}.vcxproj" %}
+    {% file snippet vsproj_vcxproj_filters "vs/{{self.project_name}}.vcxproj.filters" %}
+    {% file snippet vsproj_vcxproj_user    "vs/{{self.project_name}}.vcxproj.user" %}
   {% endmodule %}
 {% endtemplate %}
 
@@ -178,9 +175,13 @@ EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
   {% file snippet getopt_main_hxx "src/${self.project_name}.h"  %}
   {% file snippet getopt_main_cxx "src/${self.project_name}.cc" %}
   {% module "vs" %}
-    {% file snippet vs_getopt_h "vs/src/getopt.h" %}
-    {% file snippet vs_getopt_c "vs/src/getopt.c" %}
-    {% file snippet vs_getopt_long_c "vs/src/getopt_long.c" %}
+    {% file snippet vs_getopt_h            "vs/src/getopt.h" %}
+    {% file snippet vs_getopt_c            "vs/src/getopt.c" %}
+    {% file snippet vs_getopt_long_c       "vs/src/getopt_long.c" %}
+    {% file snippet vsproj_sln             "vs/${self.project_name}.sln" %}
+    {% file snippet vsproj_vcxproj         "vs/${self.project_name}.vcxproj" %}
+    {% file snippet vsproj_vcxproj_filters "vs/${self.project_name}.vcxproj.filters" %}
+    {% file snippet vsproj_vcxproj_user    "vs/${self.project_name}.vcxproj.user" %}
   {% endmodule %}
 {% endtemplate %}
 
@@ -189,8 +190,8 @@ EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
 {% project "minimal.c"          extends "shallow.c"          %}{% endproject %}
 {% project "minimal.c++"        extends "shallow.c++"        %}{% endproject %}
 
-{% project "deep.c"             extends "deep.c"             %}{% endproject %}
-{% project "deep.c++"           extends "deep.c++"           %}{% endproject %}
+{% project "minimal.deep.c"     extends "deep.c"             %}{% endproject %}
+{% project "minimal.deep.c++"   extends "deep.c++"           %}{% endproject %}
 
 {% project "minimal.getopt.c"   extends "shallow.getopt.c"   %}{% endproject %}
 {% project "minimal.getopt.c++" extends "shallow.getopt.c++" %}{% endproject %}
@@ -1254,6 +1255,10 @@ getopt_long(nargc, nargv, options, long_options, index)
 
 
 
+
+
+
+
 {% commment %}
 --------------------------------------------------------------------------------
 {% endcomment %}
@@ -1263,6 +1268,296 @@ getopt_long(nargc, nargv, options, long_options, index)
 
 
 
+
+{% snippet vsproj_sln %}
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dirscan", "dirscan.vcxproj", "{86329F78-DAD6-4B37-8347-73C91098B4FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x64.ActiveCfg = Debug|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x64.Build.0 = Debug|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x86.ActiveCfg = Debug|Win32
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x86.Build.0 = Debug|Win32
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x64.ActiveCfg = Release|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x64.Build.0 = Release|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x86.ActiveCfg = Release|Win32
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {92189B00-4F34-4371-BBDA-F4F343E1A1BD}
+	EndGlobalSection
+EndGlobal
+{% endsnippet %}
+
+
+{% snippet vsproj_vcxproj %}
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dirscan_mt.cc" />
+    <ClCompile Include="..\src\dirscan_st.cc" />
+    <ClCompile Include="..\src\dirscan_windirstat.cc" />
+    <ClCompile Include="..\src\main.cc" />
+    <ClCompile Include="src\getopt.c" />
+    <ClCompile Include="src\getopt_long.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\dirscan.h" />
+    <ClInclude Include="src\getopt.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{86329f78-dad6-4b37-8347-73c91098b4fa}</ProjectGuid>
+    <RootNamespace>dirscan</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
+{% endsnippet %}
+
+{% snippet vsproj_vcxproj_filters %}
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getopt_long.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dirscan_mt.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dirscan_st.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dirscan_windirstat.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\getopt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dirscan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
+{% endsnippet %}
+
+{% snippet vsproj_vcxproj_user %}
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+</Project>
+{% endsnippet %}
+
+
+
+
+
+
+
+{% commment %}
+--------------------------------------------------------------------------------
+{% endcomment %}
 
 
 
