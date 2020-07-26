@@ -75,9 +75,13 @@ SUBDIRS = src
   - we need more features to support the generation of the VS project files
   - is this the right place for this module?
 {% endcomment %}
-EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
+{{ self.extra_dist }}
 {% endmodule %}
 {% endfile %}
+{% multiline extra_dist %}
+EXTRA_DIST = vs/build.bat
+{% endmultiline %}
+{% module vs %} {% file snippet vs_build_bat "vs/build.bat" %}{% endmodule%}
 {% file "src/Makefile.am" %}
 bin_PROGRAMS = {{ self.project_name }}
 {{ self.project_name }}_SOURCES = {{ self.project_name }}{{ self.src_ext }}
@@ -100,56 +104,104 @@ EXTRA_DIST = $(man_MANS)
 
 
 
+{% comment %} Yes, its multiple inherentance, just grabbing some variables {% endcomment %}
 
 
-{% template "shallow.c" extends "automake.shallow" %}
+{% template "c" %}
 {% instance src_ext ".c" %}
 {% instance multiline compiler_prog %}
 AC_PROG_CC
 {% endmultiline %}
-{% file snippet simple_main_c "${self.project_name}.c" %}
 {% endtemplate %}
 
-{% template "shallow.c++" extends "automake.shallow" %}
+{% template "c++" %}
 {% instance src_ext ".cc" %}
 {% instance multiline compiler_prog %}
 AC_PROG_CXX
 {% endmultiline %}
-{% file snippet simple_main_cxx "${self.project_name}.cc" %}
-{% endproject %}
-
-{% template "deeo.c" extends "automake.deep" %}
-{% instance src_ext ".c" %}
-{% instance multiline compiler_prog %}
-AC_PROG_CC
-{% endmultiline %}
-{% file snippet simple_main_c "src/${self.project_name}.c" %}
 {% endtemplate %}
 
-{% template "deep.c++" extends "automake.deep" %}
-{% instance src_ext ".cc" %}
-{% instance multiline compiler_prog %}
-AC_PROG_CXX
+
+
+
+
+
+
+
+
+
+
+{% template "shallow.c"   extends "automake.shallow" extends "c"   %}{% file snippet simple_main_c   "${self.project_name}.c"      %}{% endtemplate %}
+{% template "shallow.c++" extends "automake.shallow" extends "c++" %}{% file snippet simple_main_cxx "${self.project_name}.cc"     %}{% endtemplate %}
+{% template "deep.c"      extends "automake.deep"    extends "c"   %}{% file snippet simple_main_c   "src/${self.project_name}.c"  %}{% endtemplate %}
+{% template "deep.c++"    extends "automake.deep"    extends "c++" %}{% file snippet simple_main_cxx "src/${self.project_name}.cc" %}{% endtemplate %}
+
+
+
+
+
+
+
+
+
+
+
+{% template "shallow.getopt.c"   extends "automake.shallow" extends "c"   %}
+  {% file snippet getopt_main_h   "${self.project_name}.h"      %}
+  {% file snippet getopt_main_c   "${self.project_name}.c"      %}
+{% endtemplate %}
+
+{% template "shallow.getopt.c++" extends "automake.shallow" extends "c++" %}
+  {% file snippet getopt_main_hxx "${self.project_name}.h"      %}
+  {% file snippet getopt_main_cxx "${self.project_name}.cc"     %}
+{% endtemplate %}
+
+{% template "deep.getopt.c"      extends "automake.deep"    extends "c"   %}
+{% multiline extra_dist %}
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
 {% endmultiline %}
-{% file snippet simple_main_cxx "src/${self.project_name}.cc" %}
-{% endproject %}
+
+  {% file snippet getopt_main_h   "src/${self.project_name}.h"  %}
+  {% file snippet getopt_main_c   "src/${self.project_name}.c"  %}
+  {% module "vs" %}
+    {% file snippet vs_getopt_h "vs/src/getopt.h" %}
+    {% file snippet vs_getopt_c "vs/src/getopt.c" %}
+    {% file snippet vs_getopt_long_c "vs/src/getopt_long.c" %}
+  {% endmodule %}
+{% endtemplate %}
+
+{% template "deep.getopt.c++"    extends "automake.deep"    extends "c++" %}
+{% multiline extra_dist %}
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
+{% endmultiline %}
+
+  {% file snippet getopt_main_hxx "src/${self.project_name}.h"  %}
+  {% file snippet getopt_main_cxx "src/${self.project_name}.cc" %}
+  {% module "vs" %}
+    {% file snippet vs_getopt_h "vs/src/getopt.h" %}
+    {% file snippet vs_getopt_c "vs/src/getopt.c" %}
+    {% file snippet vs_getopt_long_c "vs/src/getopt_long.c" %}
+  {% endmodule %}
+{% endtemplate %}
+
+
+
+{% project "minimal.c"          extends "shallow.c"          %}{% endproject %}
+{% project "minimal.c++"        extends "shallow.c++"        %}{% endproject %}
+
+{% project "deep.c"             extends "deep.c"             %}{% endproject %}
+{% project "deep.c++"           extends "deep.c++"           %}{% endproject %}
+
+{% project "minimal.getopt.c"   extends "shallow.getopt.c"   %}{% endproject %}
+{% project "minimal.getopt.c++" extends "shallow.getopt.c++" %}{% endproject %}
+
+{% project "deep.getopt.c"      extends "deep.getopt.c"      %}{% endproject %}
+{% project "deep.getopt.c++"    extends "deep.getopt.c++"    %}{% endproject %}
 
 
 
 
 
-
-
-
-
-
-
-
-{% project "minimal.c" extends "shallow.c" %}{% endproject %}
-{% project "minimal.c++" extends "shallow.c++" %}{% endproject %}
-
-{% project "deep.c" extends "deep.c" %}{% endproject %}
-{% project "deep.c++" extends "deep.c++" %}{% endproject %}
 
 
 
@@ -199,6 +251,320 @@ int main(int argc,char* argv[]) {
   return 0;
 }
 {% endsnippet %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+   --------------------------------------------------------------------------------
+   --- BEGIN GETOPT MAIN SNIPPETS
+   --------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
+
+
+
+{% snippet getopt_main_h %}
+#ifndef INCLUDED_{{ self.project_name | upcase }}_H
+#define INCLUDED_{{ self.project_name | upcase }}_H
+
+/* program options */
+struct {{ self.project_name }}_options
+{
+  int verbose;
+};
+
+#endif
+{% endsnippet %}
+{% snippet getopt_main_c %}
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include "{{self.project_name}}.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+#include <getopt.h>
+
+enum
+{
+  GETOPT_HELP_CHAR = (CHAR_MIN - 2),
+  GETOPT_VERSION_CHAR = (CHAR_MIN - 3)
+};
+
+#define GETOPT_HELP_OPTION_DECL			\
+  "help", no_argument, NULL, GETOPT_HELP_CHAR
+#define GETOPT_VERSION_OPTION_DECL \
+  "version", no_argument, NULL, GETOPT_VERSION_CHAR
+
+static struct option const long_options[] =
+  {
+    {"verbose",no_argument,NULL,'v'},
+    {GETOPT_HELP_OPTION_DECL},
+    {GETOPT_VERSION_OPTION_DECL},
+    {NULL,0,NULL,0}
+  };
+
+static void {{ self.project_name }}_options_init(struct {{ self.project_name }}_options *x) {
+  x->verbose = 0;
+}
+
+
+static void usage() {
+  printf("{{ self.project_name }} [OPTION]... SOURCE...\n\n");
+
+  printf(
+    "  -v, --verbose  explain what's being done\n"
+    "      --help     display this help and exit\n"
+    "      --version  output version information and exit\n"
+    );
+
+  printf(
+    "\n"
+    "Use this program to ... This place is used to explain the use\n"
+    "of this program in one or two simple to read paragraphs.\n"
+    "\n"
+    );
+}
+
+static void version() {
+  printf(
+    "{{ self.project_name }} (" PACKAGE_NAME ") " PACKAGE_VERSION "\n"
+    "Copyright (C) {{ std.year }} {{ identity.author }} <{{ identity.email }}>\n"
+    "Dual-Licence GPLv2+ and MIT.\n"
+    "This is free software; you are free to change and redistribute it.\n"
+    "There is NO WARANTY, to the extent permitted by law.\n"
+    );
+}
+
+
+
+int main(int argc, char* argv[]) {
+  int c;
+  struct {{ self.project_name }}_options x;
+  
+  {{ self.project_name }}_options_init(&x);
+
+  // if we just type the command, we want help.
+  if (argc == 1) {
+    usage();
+    return EXIT_SUCCESS;
+  }
+  
+  while ((c = getopt_long(argc,argv,"v",long_options, NULL)) != -1)
+    {
+      switch (c)
+	{
+	case 'v':
+	  x.verbose = 1;
+	  break;
+	  
+	case GETOPT_HELP_CHAR:
+	  usage();
+	  return EXIT_SUCCESS;
+	  
+	case GETOPT_VERSION_CHAR:
+	  version();
+	  return EXIT_SUCCESS;
+
+        case '?':
+	  return EXIT_FAILURE; // getopt_long() already printed an error message
+	  
+	default:
+	  usage();
+	  return EXIT_FAILURE;
+	}
+    }
+
+  if (argc - optind < 1)
+    {
+      printf(
+        "{{ self.project_name }}: missing file operands\n"
+        "Try '{{ self.project_name }} --help' for more information.\n"
+	);
+      return EXIT_FAILURE;
+    }
+
+  // todo: implement the program
+
+  return EXIT_SUCCESS;
+}
+{% endsnippet %}
+
+
+
+
+{% snippet getopt_main_hxx %}
+#ifndef INCLUDED_{{ self.project_name | upcase }}_H
+#define INCLUDED_{{ self.project_name | upcase }}_H
+
+/* program options */
+struct {{ self.project_name }}_options
+{
+  int verbose;
+};
+
+#endif
+{% endsnippet %}
+{% snippet getopt_main_cxx %}
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include "{{self.project_name}}.h"
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <climits>
+
+#include <getopt.h>
+
+enum
+{
+  GETOPT_HELP_CHAR = (CHAR_MIN - 2),
+  GETOPT_VERSION_CHAR = (CHAR_MIN - 3)
+};
+
+#define GETOPT_HELP_OPTION_DECL			\
+  "help", no_argument, nullptr, GETOPT_HELP_CHAR
+#define GETOPT_VERSION_OPTION_DECL \
+  "version", no_argument, nullptr, GETOPT_VERSION_CHAR
+
+static struct option const long_options[] =
+  {
+    {"verbose",no_argument,nullptr,'v'},
+    {GETOPT_HELP_OPTION_DECL},
+    {GETOPT_VERSION_OPTION_DECL},
+    {nullptr,0,nullptr,0}
+  };
+
+static void {{ self.project_name }}_options_init(struct {{ self.project_name }}_options *x) {
+  x->verbose = 0;
+}
+
+
+static void usage() {
+  std::cout << "{{ self.project_name }} [OPTION]... SOURCE...\n\n";
+
+  std::cout
+    << "  -v, --verbose  explain what's being done\n"
+    << "      --help     display this help and exit\n"
+    << "      --version  output version information and exit\n"
+    ;
+
+  std::cout << "\n";
+  std::cout << "Use this program to ... This place is used to explain the use\n";
+  std::cout << "of this program in one or two simple to read paragraphs.\n";
+  std::cout << "\n";
+}
+
+static void version() {
+  std::cout << "{{ self.project_name }} (" PACKAGE_NAME ") " PACKAGE_VERSION "\n";
+  std::cout << "Copyright (C) {{ std.year }} {{ identity.author }} <{{ identity.email }}>\n";
+  std::cout << "Licence GPLv2+\n";
+  std::cout << "This is free software; you are free to change and redistribute it.\n";
+  std::cout << "There is NO WARANTY, to the extent permitted by law.\n";
+}
+
+
+
+int main(int argc, char* argv[]) {
+  int c;
+  struct {{ project_name }}_options x;
+  
+  {{ project_name }}_options_init(&x);
+
+  // if we just type the command, we want help.
+  if (argc == 1) {
+    usage();
+    return EXIT_SUCCESS;
+  }
+  
+  while ((c = getopt_long(argc,argv,"v",long_options, NULL)) != -1)
+    {
+      switch (c)
+	{
+	case 'v':
+	  x.verbose = 1;
+	  break;
+	  
+	case GETOPT_HELP_CHAR:
+	  usage();
+	  return EXIT_SUCCESS;
+	  
+	case GETOPT_VERSION_CHAR:
+	  version();
+	  return EXIT_SUCCESS;
+
+        case '?':
+	  return EXIT_FAILURE; // getopt_long() already printed an error message
+	  
+	default:
+	  usage();
+	  return EXIT_FAILURE;
+	}
+    }
+
+  if (argc - optind < 1)
+    {
+      std::cout << "{{ self.project_name }}: missing file operands\n";
+      std::cout << "Try '{{ self.project_name }} --help' for more information.\n";
+      return EXIT_FAILURE;
+    }
+
+
+  std::vector<std::string> args(argv + optind, argv + argc);
+  auto functionality = [](std::vector<std::string> args, {{self.project_name}}_options* x){
+  };  
+  functionality(args,&x);
+
+
+  return EXIT_SUCCESS;
+}
+{% endsnippet %}
+
+
+
+
+
+
+
+{% comment %}
+   --------------------------------------------------------------------------------
+   --- END GETOPT MAIN SNIPPETS
+   --------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
 
 
 
@@ -423,4 +789,480 @@ should be flavored as usual, to have tc/gnu/bsd type of class skeletons.
 to have .cc files as alias for .cpp templates.
 
 {% endsnippet %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% commment %}
+--------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+{% snippet "vs_build_bat" %}
+MSBuild {{self.project_name}}.sln /target:Rebuild /property:Configuration=Release /property:Platform=x64
+{% endsnippet %}
+
+
+
+{% snippet "vs_getopt_h" %}
+#ifndef __GETOPT_H__
+#define __GETOPT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern int opterr;		/* if error message should be printed */
+extern int optind;		/* index into parent argv vector */
+extern int optopt;		/* character checked for validity */
+extern int optreset;		/* reset getopt */
+extern char *optarg;		/* argument associated with option */
+
+struct option
+{
+  const char *name;
+  int has_arg;
+  int *flag;
+  int val;
+};
+
+#define no_argument       0
+#define required_argument 1
+#define optional_argument 2
+
+int getopt(int, char**, char*);
+int getopt_long(int, char**, const char*, struct option*, int*);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __GETOPT_H__ */
+{% endsnippet %}
+
+
+
+{% snippet "vs_getopt_c" %}
+#pragma warning (disable : 6011)
+
+/*	$NetBSD: getopt.c,v 1.16 1999/12/02 13:15:56 kleink Exp $	*/
+
+/*
+ * Copyright (c) 1987, 1993, 1994
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+#if 0
+static char sccsid[] = "@(#)getopt.c	8.3 (Berkeley) 4/27/95";
+#endif
+
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+#define __P(x) x
+#define _DIAGASSERT(x) assert(x)
+
+#ifdef __weak_alias
+__weak_alias(getopt,_getopt);
+#endif
+
+
+int	opterr = 1,		/* if error message should be printed */
+	optind = 1,		/* index into parent argv vector */
+	optopt,			/* character checked for validity */
+	optreset;		/* reset getopt */
+char	*optarg;		/* argument associated with option */
+
+static char * _progname __P((char *));
+int getopt_internal __P((int, char * const *, const char *));
+
+static char *
+_progname(nargv0)
+	char * nargv0;
+{
+	char * tmp;
+
+	_DIAGASSERT(nargv0 != NULL);
+
+	tmp = strrchr(nargv0, '/');
+	if (tmp)
+		tmp++;
+	else
+		tmp = nargv0;
+	return(tmp);
+}
+
+#define	BADCH	(int)'?'
+#define	BADARG	(int)':'
+#define	EMSG	""
+
+/*
+ * getopt --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt(nargc, nargv, ostr)
+	int nargc;
+	char * const nargv[];
+	const char *ostr;
+{
+	static char *__progname = 0;
+	static char *place = EMSG;		/* option letter processing */
+	char *oli;				/* option letter list index */
+        __progname = __progname?__progname:_progname(*nargv);
+
+	_DIAGASSERT(nargv != NULL);
+	_DIAGASSERT(ostr != NULL);
+
+	if (optreset || !*place) {		/* update scanning pointer */
+		optreset = 0;
+		if (optind >= nargc || *(place = nargv[optind]) != '-') {
+			place = EMSG;
+			return (-1);
+		}
+		if (place[1] && *++place == '-'	/* found "--" */
+		    && place[1] == '\0') {
+			++optind;
+			place = EMSG;
+			return (-1);
+		}
+	}					/* option letter okay? */
+	if ((optopt = (int)*place++) == (int)':' ||
+	    !(oli = strchr(ostr, optopt))) {
+		/*
+		 * if the user didn't specify '-' as an option,
+		 * assume it means -1.
+		 */
+		if (optopt == (int)'-')
+			return (-1);
+		if (!*place)
+			++optind;
+		if (opterr && *ostr != ':')
+			(void)fprintf(stderr,
+			    "%s: illegal option -- %c\n", __progname, optopt);
+		return (BADCH);
+	}
+	if (*++oli != ':') {			/* don't need argument */
+		optarg = NULL;
+		if (!*place)
+			++optind;
+	}
+	else {					/* need an argument */
+		if (*place)			/* no white space */
+			optarg = place;
+		else if (nargc <= ++optind) {	/* no arg */
+			place = EMSG;
+			if (*ostr == ':')
+				return (BADARG);
+			if (opterr)
+				(void)fprintf(stderr,
+				    "%s: option requires an argument -- %c\n",
+				    __progname, optopt);
+			return (BADCH);
+		}
+	 	else				/* white space */
+			optarg = nargv[optind];
+		place = EMSG;
+		++optind;
+	}
+	return (optopt);			/* dump back option letter */
+}
+{% endsnippet %}
+
+
+
+{% snippet "vs_getopt_long_c" %}
+#pragma warning (disable : 6011 4244 4267)
+
+/*
+ * Copyright (c) 1987, 1993, 1994, 1996
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "getopt.h"
+
+extern int	  opterr;	/* if error message should be printed */
+extern int	  optind;	/* index into parent argv vector */
+extern int	  optopt;	/* character checked for validity */
+extern int	  optreset;	/* reset getopt */
+extern char *optarg;	/* argument associated with option */
+
+#define __P(x) x
+#define _DIAGASSERT(x) assert(x)
+
+static char * __progname __P((char *));
+int getopt_internal __P((int, char * const *, const char *));
+
+static char *
+__progname(nargv0)
+	char * nargv0;
+{
+	char * tmp;
+
+	_DIAGASSERT(nargv0 != NULL);
+
+	tmp = strrchr(nargv0, '/');
+	if (tmp)
+		tmp++;
+	else
+		tmp = nargv0;
+	return(tmp);
+}
+
+#define	BADCH	(int)'?'
+#define	BADARG	(int)':'
+#define	EMSG	""
+
+/*
+ * getopt --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt_internal(nargc, nargv, ostr)
+	int nargc;
+	char * const *nargv;
+	const char *ostr;
+{
+	static char *place = EMSG;		/* option letter processing */
+	char *oli;				/* option letter list index */
+
+	_DIAGASSERT(nargv != NULL);
+	_DIAGASSERT(ostr != NULL);
+
+	if (optreset || !*place) {		/* update scanning pointer */
+		optreset = 0;
+		if (optind >= nargc || *(place = nargv[optind]) != '-') {
+			place = EMSG;
+			return (-1);
+		}
+		if (place[1] && *++place == '-') {	/* found "--" */
+			/* ++optind; */
+			place = EMSG;
+			return (-2);
+		}
+	}					/* option letter okay? */
+	if ((optopt = (int)*place++) == (int)':' ||
+	    !(oli = strchr(ostr, optopt))) {
+		/*
+		 * if the user didn't specify '-' as an option,
+		 * assume it means -1.
+		 */
+		if (optopt == (int)'-')
+			return (-1);
+		if (!*place)
+			++optind;
+		if (opterr && *ostr != ':')
+			(void)fprintf(stderr,
+			    "%s: illegal option -- %c\n", __progname(nargv[0]), optopt);
+		return (BADCH);
+	}
+	if (*++oli != ':') {			/* don't need argument */
+		optarg = NULL;
+		if (!*place)
+			++optind;
+	} else {				/* need an argument */
+		if (*place)			/* no white space */
+			optarg = place;
+		else if (nargc <= ++optind) {	/* no arg */
+			place = EMSG;
+			if ((opterr) && (*ostr != ':'))
+				(void)fprintf(stderr,
+				    "%s: option requires an argument -- %c\n",
+				    __progname(nargv[0]), optopt);
+			return (BADARG);
+		} else				/* white space */
+			optarg = nargv[optind];
+		place = EMSG;
+		++optind;
+	}
+	return (optopt);			/* dump back option letter */
+}
+
+#if 0
+/*
+ * getopt --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt2(nargc, nargv, ostr)
+	int nargc;
+	char * const *nargv;
+	const char *ostr;
+{
+	int retval;
+
+	if ((retval = getopt_internal(nargc, nargv, ostr)) == -2) {
+		retval = -1;
+		++optind; 
+	}
+	return(retval);
+}
+#endif
+
+/*
+ * getopt_long --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt_long(nargc, nargv, options, long_options, index)
+	int nargc;
+	char ** nargv;
+	const char * options;
+	struct option * long_options;
+	int * index;
+{
+	int retval;
+
+	_DIAGASSERT(nargv != NULL);
+	_DIAGASSERT(options != NULL);
+	_DIAGASSERT(long_options != NULL);
+	/* index may be NULL */
+
+	if ((retval = getopt_internal(nargc, nargv, options)) == -2) {
+		char *current_argv = nargv[optind++] + 2, *has_equal;
+		int i, current_argv_len, match = -1;
+
+		if (*current_argv == '\0') {
+			return(-1);
+		}
+		if ((has_equal = strchr(current_argv, '=')) != NULL) {
+			current_argv_len = has_equal - current_argv;
+			has_equal++;
+		} else
+			current_argv_len = strlen(current_argv);
+
+		for (i = 0; long_options[i].name; i++) { 
+			if (strncmp(current_argv, long_options[i].name, current_argv_len))
+				continue;
+
+			if (strlen(long_options[i].name) == (unsigned)current_argv_len) { 
+				match = i;
+				break;
+			}
+			if (match == -1)
+				match = i;
+		}
+		if (match != -1) {
+			if (long_options[match].has_arg == required_argument ||
+			    long_options[match].has_arg == optional_argument) {
+				if (has_equal)
+					optarg = has_equal;
+				else
+					optarg = nargv[optind++];
+			}
+			if ((long_options[match].has_arg == required_argument)
+			    && (optarg == NULL)) {
+				/*
+				 * Missing argument, leading :
+				 * indicates no error should be generated
+				 */
+				if ((opterr) && (*options != ':'))
+					(void)fprintf(stderr,
+				      "%s: option requires an argument -- %s\n",
+				      __progname(nargv[0]), current_argv);
+				return (BADARG);
+			}
+		} else { /* No matching argument */
+			if ((opterr) && (*options != ':'))
+				(void)fprintf(stderr,
+				    "%s: illegal option -- %s\n", __progname(nargv[0]), current_argv);
+			return (BADCH);
+		}
+		if (long_options[match].flag) {
+			*long_options[match].flag = long_options[match].val;
+			retval = 0;
+		} else 
+			retval = long_options[match].val;
+		if (index)
+			*index = match;
+	}
+	return(retval);
+}
+{% endsnippet %}
+
+
+
+{% commment %}
+--------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
+
+
+
 
