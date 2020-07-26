@@ -1,0 +1,84 @@
+{% json "identity" %}
+{
+	{ "author" : "Bert van der Weerd" },
+	{ "email" : "bert@stanzabird.nl" },
+	{ "gitname" : "stanzabird" }
+}
+{% endjson %}
+
+
+
+{% template "autotools" %}
+
+{% file "configure.ac" %}
+AC_INIT([{{ project_name }}],[0.1.0],[{{ identity | select "email" }}],[],[https://github.com/{{ identity | select "gitname" }}/{{ project_name }}/])
+AC_CONFIG_SRCDIR({{ project_name }}{{ template | select "src_ext" }})
+AC_PREREQ(2.59)
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+{{ template | multiline "compiler_prog" }}
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT
+{% endfile %}
+
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+bin_PROGRAMS = {{ project_name }}
+{{ project_name }}_SOURCES = {{ project_name }}{{ template | select "src_ext" }}
+{% endfile %}
+
+{% endtemplate %}
+
+
+
+{% project "minimal.c" %}
+
+{% instance "autotools" %}
+{
+	{ "src_ext" : ".c" }
+}
+{% multiline "compiler_prog" %}
+AC_PROG_CC
+{% endmultiline %}
+{% endinstance %}
+
+{% file "${pn}.c" %}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc,char* argv[]) {
+  return 0;
+}
+{% endfile %}
+
+{% endproject %}
+
+
+
+
+{% project "minimal.c++" %}
+
+{% instance "autotools" %}
+{
+	{ "src_ext" : ".cc" }
+}
+{% endinstance %}
+{% instance "autotools" multiline "compiler_prog" %}
+AC_PROG_CXX
+{% endmultiline %}
+
+{% file "${pn}.cc" %}
+#include <iostream>
+#include <vector>
+#include <string>
+
+int main(int argc,char* argv[]) {
+  return 0;
+}
+{% endfile %}
+
+{% endproject %}
+
+
+
