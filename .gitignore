@@ -23,3 +23,10 @@ src/scanner.c
 stamp-h1
 ylwrap
 *~
+
+proposals/vn2
+src/v1/.deps/
+src/v1/parser.c
+src/v1/parser.h
+src/v1/scanner.c
+src/v1/vn

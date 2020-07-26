@@ -14,5 +14,5 @@ AX_CXX_COMPILE_STDCXX_17
 AX_PROG_FLEX
 AX_PROG_BISON
 
-AC_CONFIG_FILES(Makefile src/Makefile proposals/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile src/v1/Makefile proposals/Makefile)
 AC_OUTPUT
