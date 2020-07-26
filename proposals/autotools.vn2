@@ -32,15 +32,10 @@ bin_PROGRAMS = {{ project_name }}
 
 
 {% project "minimal.c" %}
-
-{% instance "autotools" %}
-{
-	{ "src_ext" : ".c" }
-}
-{% multiline "compiler_prog" %}
+{% instance "autotools" %} { { "src_ext" : ".c" } } {% endinstance %}
+{% instance "autotools" multiline "compiler_prog" %}
 AC_PROG_CC
 {% endmultiline %}
-{% endinstance %}
 
 {% file "${pn}.c" %}
 #include <stdio.h>

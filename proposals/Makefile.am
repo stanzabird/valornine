@@ -1,2 +1,2 @@
-bin_PROGRAMS = vn
-vn_SOURCES = vn.h vn.cc main.cc
+bin_PROGRAMS = vn2
+vn2_SOURCES = vn2.h vn2.cc main.cc
