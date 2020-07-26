@@ -1,51 +1,182 @@
-{% json "identity" %}
+{% commment %}
+ --- Testing utf8 source files : smiley [ ☺ ]
+{% endcomment %}
+
+{% json identity %}
 {
-	{ "author" : "Bert van der Weerd" },
-	{ "email" : "bert@stanzabird.nl" },
-	{ "gitname" : "stanzabird" }
+  { "author" : "Bert van der Weerd" },
+  { "email" : "bert@stanzabird.nl" },
+  { "gitname" : "stanzabird" }
 }
 {% endjson %}
 
 
 
-{% template "autotools" %}
+{% template "configure" %}
 {% file "configure.ac" %}
-AC_INIT([{{ project_name }}],[0.1.0],[{{ identity | select "email" }}],[],[https://github.com/{{ identity | select "gitname" }}/{{ project_name }}/])
-AC_CONFIG_SRCDIR({{ project_name }}{{ template | select "src_ext" }})
+AC_INIT([{{ self.project_name }}],[0.1.0],[{{ identity.email }}],[],[https://github.com/{{ identity.gitname }}/{{ self.project_name }}/])
+{{ self.ac_config_srcdir }}
 AC_PREREQ(2.59)
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS(config.h)
-{{ template | multiline "compiler_prog" }}
-AC_CONFIG_FILES(Makefile)
+{{ self.compiler_prog }}
+{{ self.ac_config_files }}
 AC_OUTPUT
 {% endfile %}
-{% file "Makefile.am" %}
-AUTOMAKE_OPTIONS = foreign
-bin_PROGRAMS = {{ project_name }}
-{{ project_name }}_SOURCES = {{ project_name }}{{ template | select "src_ext" }}
-{% module man %}
-
-man_MANS = {{ project_name }}.1
-
-man :
-	nroff -man {{ project_name }}.1 | less
-
-EXTRA_DIST = $(man_MANS)
-{% endmodule %}
-{% endfile %}
-{% module man %}
-{% file snippet manpage "${pn}.1" %}
-{% endmodule %}
 {% endtemplate %}
 
 
 
-{% project "minimal.c" %}
-{% instance "autotools" %} { { "src_ext" : ".c" } } {% endinstance %}
-{% instance "autotools" multiline "compiler_prog" %}
+
+
+{% template "automake.shallow" extends "configure" %}
+{% multiline ac_config_files %}
+AC_CONFIG_FILES(Makefile)
+{% endmultiline %}
+{% mutiline ac_config_srcdir %}
+AC_CONFIG_SRCDIR({{ self.project_name }}{{ self.src_ext }})
+{% endmultiline %}
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+bin_PROGRAMS = {{ project_name }}
+{{ project_name }}_SOURCES = {{ self.project_name }}{{ self.src_ext }}
+{% module man %}
+
+man_MANS = {{ self.project_name }}.1
+
+man :
+	nroff -man {{ self.project_name }}.1 | less
+
+EXTRA_DIST = $(man_MANS)
+{% endmodule %}
+{% endfile %}
+{% module man %} {% file snippet manpage "${self.project_name}.1" %} {% endmodule %}
+{% endtemplate %}
+
+
+
+
+
+
+{% template "automake.deep" %}
+{% multiline ac_config_files %}
+AC_CONFIG_FILES(Makefile src/Makefile)
+{% endmultiline %}
+{% mutiline ac_config_srcdir %}
+AC_CONFIG_SRCDIR(src/{{ self.project_name }}{{ self.src_ext }})
+{% endmultiline %}
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+SUBDIRS = src
+{% module vs %}
+{% comment %}
+  - I'm thinking only with a deep autoconf structure it kinda looks nice
+    to have vs shizzle at all.
+  - we need more features to support the generation of the VS project files
+  - is this the right place for this module?
+{% endcomment %}
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
+{% endmodule %}
+{% endfile %}
+{% file "src/Makefile.am" %}
+bin_PROGRAMS = {{ self.project_name }}
+{{ self.project_name }}_SOURCES = {{ self.project_name }}{{ self.src_ext }}
+{% module man %}
+
+man_MANS = {{ self.project_name }}.1
+
+man :
+	nroff -man {{ self.project_name }}.1 | less
+
+EXTRA_DIST = $(man_MANS)
+{% endmodule %}
+{% endfile %}
+{% module man %} {% file snippet manpage "src/${self.project_name}.1" %} {% endmodule %}
+{% endtemplate %}
+
+
+
+
+
+
+
+
+
+{% template "shallow.c" extends "automake.shallow" %}
+{% instance src_ext ".c" %}
+{% instance multiline compiler_prog %}
 AC_PROG_CC
 {% endmultiline %}
-{% file "${pn}.c" %}
+{% file snippet simple_main_c "${self.project_name}.c" %}
+{% endtemplate %}
+
+{% template "shallow.c++" extends "automake.shallow" %}
+{% instance src_ext ".cc" %}
+{% instance multiline compiler_prog %}
+AC_PROG_CXX
+{% endmultiline %}
+{% file snippet simple_main_cxx "${self.project_name}.cc" %}
+{% endproject %}
+
+{% template "deeo.c" extends "automake.deep" %}
+{% instance src_ext ".c" %}
+{% instance multiline compiler_prog %}
+AC_PROG_CC
+{% endmultiline %}
+{% file snippet simple_main_c "src/${self.project_name}.c" %}
+{% endtemplate %}
+
+{% template "deep.c++" extends "automake.deep" %}
+{% instance src_ext ".cc" %}
+{% instance multiline compiler_prog %}
+AC_PROG_CXX
+{% endmultiline %}
+{% file snippet simple_main_cxx "src/${self.project_name}.cc" %}
+{% endproject %}
+
+
+
+
+
+
+
+
+
+
+
+
+{% project "minimal.c" extends "shallow.c" %}{% endproject %}
+{% project "minimal.c++" extends "shallow.c++" %}{% endproject %}
+
+{% project "deep.c" extends "deep.c" %}{% endproject %}
+{% project "deep.c++" extends "deep.c++" %}{% endproject %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% commment %}
+
+ --- In a way, these two snippets are the only actual C/C++ code that is relevant at all.. ☺
+
+{% endcomment %}
+
+{% snippet simple_main_c %}
+#ifndef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,17 +184,13 @@ AC_PROG_CC
 int main(int argc,char* argv[]) {
   return 0;
 }
-{% endfile %}
-{% endproject %}
+{% endsnippet %}
 
+{% snippet simple_main_cxx %}
+#ifndef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-
-{% project "minimal.c++" %}
-{% instance "autotools" %} { { "src_ext" : ".cc" } } {% endinstance %}
-{% instance "autotools" multiline "compiler_prog" %}
-AC_PROG_CXX
-{% endmultiline %}
-{% file "${pn}.cc" %}
 #include <iostream>
 #include <vector>
 #include <string>
@@ -71,8 +198,7 @@ AC_PROG_CXX
 int main(int argc,char* argv[]) {
   return 0;
 }
-{% endfile %}
-{% endproject %}
+{% endsnippet %}
 
 
 
@@ -84,17 +210,24 @@ int main(int argc,char* argv[]) {
 
 
 
+
+{% commment %}
+
+ --- This manpage just tries to set the bare minimum standard of what should
+ go into it. It's content is garbage from a previous version of valornine.
+
+{% endcomment %}
 
 {% snippet manpage %}
-.TH {{ project_name }} 1 "{{ year }}"
+.TH {{ self.project_name }} 1 "{{ std.year }}"
 
 .SH NAME
-{{ project_name }} \- Generate files and projects from a standard template file.
+{{ self.project_name }} \- Generate files and projects from a standard template file.
 
 .SH SYNOPSIS
 THIS IS AN EXAMPLE PAGE
 
-.B {{ project_name }}
+.B {{ self.project_name }}
 [
 .B -vh
 ] [
@@ -105,7 +238,7 @@ THIS IS AN EXAMPLE PAGE
 .I flavor
 ] filename ...
 .PP 
-.B {{ project_name }}
+.B {{ self.project_name }}
 .B -p
 .I project
 [
@@ -113,18 +246,18 @@ THIS IS AN EXAMPLE PAGE
 .I template_file
 ] project_name ...
 .PP 
-.B {{ project_name }}
+.B {{ self.project_name }}
 .B -l
 [
 .B -t
 .I template_file
 ]
 .PP 
-.B {{ project_name }}
+.B {{ self.project_name }}
 .B -b 
 filename ...
 .PP
-.B {{ project_name }}
+.B {{ self.project_name }}
 .B -s
 .I snippet_name
 [
