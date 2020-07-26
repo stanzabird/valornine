@@ -7,6 +7,7 @@ AC_CONFIG_HEADERS(config.h)
 
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_RANLIB
 
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_17
@@ -14,5 +15,5 @@ AX_CXX_COMPILE_STDCXX_17
 AX_PROG_FLEX
 AX_PROG_BISON
 
-AC_CONFIG_FILES(Makefile src/Makefile src/v1/Makefile proposals/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile src/v1/Makefile src/syntax/Makefile proposals/Makefile)
 AC_OUTPUT

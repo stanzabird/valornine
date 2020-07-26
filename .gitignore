@@ -30,3 +30,10 @@ src/v1/parser.c
 src/v1/parser.h
 src/v1/scanner.c
 src/v1/vn
+
+
+src/syntax/.deps/
+src/syntax/libsyntax.a
+src/syntax/parser.c
+src/syntax/parser.h
+src/syntax/scanner.c
