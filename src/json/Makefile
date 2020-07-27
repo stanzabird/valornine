@@ -1,3 +1,8 @@
+# original source = github gist
+#
+# https://gist.github.com/justjkk/436828/
+#
+
 CC=gcc
 YACC=bison
 LEX=flex
