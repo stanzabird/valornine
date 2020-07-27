@@ -1,0 +1,1711 @@
+{% commment %}
+ --- Testing utf8 source files : smiley [ ☺ ]
+{% endcomment %}
+
+{% json identity %}
+{
+  { "author" : "Bert van der Weerd ☺" },
+  { "email" : "bert@stanzabird.nl" },
+  { "gitname" : "stanzabird" }
+}
+{% endjson %}
+
+
+{%comment%} Some more utf8 testing... {%endcomment%}
+{%project "smiley"%}{%file"☺"%}☺[{{identity.author}}]☺{%endfile%}{%exec%}
+#
+# GNU Autoconf Macro Archive.
+#
+# http://www.gnu.org/software/autoconf-archive/The-Macros.html
+#
+
+wget --output-document=m4/ax_cxx_compile_stdcxx.m4     'http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_cxx_compile_stdcxx.m4'
+wget --output-document=m4/ax_cxx_compile_stdcxx_17.m4  'http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_cxx_compile_stdcxx_17.m4'
+
+wget --output-document=m4/ax_prog_flex.m4              'http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_prog_flex.m4'
+wget --output-document=m4/ax_prog_bison.m4             'http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_prog_bison.m4'
+
+#wget --output-document= ''
+#wget --output-document= ''
+#wget --output-document= ''
+{%endexec	%}
+{% file wget "crappy.txt" "https://pub.stanzabird.nl/meuk/crappy.txt" %}
+{%endproject%}
+
+
+
+
+
+{% comment %}
+
+  This project "minimal.gtk4.c" shows possible things to do
+  in the future, perhaps gtk4 with gtkglarea+opengl-es/vulkan.
+
+  Another thing, BOOST SUPPORT. I neeeeds my boost.asio!
+
+{% endcomment %}
+
+
+{% project "minimal.gtk4.c" %}
+
+  {% comment %}
+    GKT4 + autoconf + c
+    - this is how the old style projects work, without the template stuff.
+  {% endcomment %}
+
+{% file "configure.ac" %}
+AC_INIT([{{self.project_name}}], [0.1.0], [{{identity.email}}], [], [https://github.com/{{identity.gitname}}/{{self.project_name}}/])
+AC_CONFIG_SRCDIR({{self.project_name}}.c)
+AC_PREREQ(2.59)
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+AC_PROG_CC
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT
+{% endfile %}
+
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+bin_PROGRAMS = {{project_name}}
+{{self.project_name}}_SOURCES = {{self.project_name}}.c
+{{self.project_name}}_CPPFLAGS = `pkg-config --cflags gtk4`
+{{self.project_name}}_LDFLAGS = `pkg-config --libs gtk4`
+{% endfile %}
+
+{% file "{{self.projectname}}.c" %}
+#include <gtk/gtk.h>
+
+static void
+print_hello (GtkWidget *widget,
+	     gpointer   data)
+{
+  g_print ("Hello World\n");
+}
+
+static void
+activate (GtkApplication *app,
+	  gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *button, *button2;
+  GtkWidget *box, *box2, *box3;
+
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "HEYYYY");
+  gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
+
+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+  box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  box3 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  
+  gtk_window_set_child (GTK_WINDOW (window), box3);
+
+  button = gtk_button_new_with_label ("Hello World");
+  button2 = gtk_button_new_with_label ("i am button 2");
+  
+  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+  g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_window_destroy), window);
+  gtk_box_append (GTK_BOX (box), button);
+  gtk_box_append (GTK_BOX (box2), button2);
+  gtk_box_append (GTK_BOX (box3), box2);
+  gtk_box_append (GTK_BOX (box3), box);
+
+  gtk_widget_show (window);
+}
+
+int
+main (int    argc,
+      char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+{% endfile %}
+{% endproject %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% template "configure" %}
+{% file "configure.ac" %}
+AC_INIT([{{ self.project_name }}],[0.1.0],[{{ identity.email }}],[],[https://github.com/{{ identity.gitname }}/{{ self.project_name }}/])
+{{ self.ac_config_srcdir }}
+AC_PREREQ(2.59)
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+{{ self.compiler_prog }}
+{{ self.ac_config_files }}
+AC_OUTPUT
+{% endfile %}
+{% endtemplate %}
+
+
+
+
+
+{% template "automake.shallow" extends "configure" %}
+{% multiline ac_config_files %}
+AC_CONFIG_FILES(Makefile)
+{% endmultiline %}
+{% mutiline ac_config_srcdir %}
+AC_CONFIG_SRCDIR({{ self.project_name }}{{ self.src_ext }})
+{% endmultiline %}
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+bin_PROGRAMS = {{ self.project_name }}
+{{ self.project_name }}_SOURCES = {{ self.project_name }}{{ self.src_ext }}
+{% module man %}
+
+man_MANS = {{ self.project_name }}.1
+
+man :
+	nroff -man {{ self.project_name }}.1 | less
+
+EXTRA_DIST = $(man_MANS)
+{% endmodule %}
+{% endfile %}
+{% module man %} {% file snippet manpage "${self.project_name}.1" %} {% endmodule %}
+{% endtemplate %}
+
+
+
+
+
+
+{% template "automake.deep" %}
+{% multiline ac_config_files %}
+AC_CONFIG_FILES(Makefile src/Makefile)
+{% endmultiline %}
+{% mutiline ac_config_srcdir %}
+AC_CONFIG_SRCDIR(src/{{ self.project_name }}{{ self.src_ext }})
+{% endmultiline %}
+{% file "Makefile.am" %}
+AUTOMAKE_OPTIONS = foreign
+SUBDIRS = src
+{% module vs %}
+{% comment %}
+  - I'm thinking only with a deep autoconf structure it kinda looks nice
+    to have vs shizzle at all.
+  - we need more features to support the generation of the VS project files
+  - is this the right place for this module?
+{% endcomment %}
+{{ self.extra_dist }}
+{% endmodule %}
+{% endfile %}
+{% multiline extra_dist %}
+EXTRA_DIST = vs/build.bat
+{% endmultiline %}
+{% module vs %} {% file snippet vs_build_bat "vs/build.bat" %}{% endmodule%}
+{% file "src/Makefile.am" %}
+bin_PROGRAMS = {{ self.project_name }}
+{{ self.project_name }}_SOURCES = {{ self.project_name }}{{ self.src_ext }}
+{% module man %}
+
+man_MANS = {{ self.project_name }}.1
+
+man :
+	nroff -man {{ self.project_name }}.1 | less
+
+EXTRA_DIST = $(man_MANS)
+{% endmodule %}
+{% endfile %}
+{% module man %} {% file snippet manpage "src/${self.project_name}.1" %} {% endmodule %}
+{% endtemplate %}
+
+
+
+
+
+
+
+{% comment %} Yes, its multiple inherentance, just grabbing some variables {% endcomment %}
+
+
+{% template "c" %}
+{% instance src_ext ".c" %}
+{% instance multiline compiler_prog %}
+AC_PROG_CC
+{% endmultiline %}
+{% endtemplate %}
+
+{% template "c++" %}
+{% instance src_ext ".cc" %}
+{% instance multiline compiler_prog %}
+AC_PROG_CXX
+{% endmultiline %}
+{% endtemplate %}
+
+
+
+
+
+
+
+
+
+
+
+{% template "shallow.c"   extends "automake.shallow" extends "c"   %}{% file snippet simple_main_c   "${self.project_name}.c"      %}{% endtemplate %}
+{% template "shallow.c++" extends "automake.shallow" extends "c++" %}{% file snippet simple_main_cxx "${self.project_name}.cc"     %}{% endtemplate %}
+{% template "deep.c"      extends "automake.deep"    extends "c"   %}{% file snippet simple_main_c   "src/${self.project_name}.c"  %}{% endtemplate %}
+{% template "deep.c++"    extends "automake.deep"    extends "c++" %}{% file snippet simple_main_cxx "src/${self.project_name}.cc" %}{% endtemplate %}
+
+
+
+
+{% template "shallow.getopt.c"   extends "automake.shallow" extends "c"   %}
+  {% file snippet getopt_main_h   "{{self.project_name}}.h"      %}
+  {% file snippet getopt_main_c   "{{self.project_name}}.c"      %}
+{% endtemplate %}
+
+{% template "shallow.getopt.c++" extends "automake.shallow" extends "c++" %}
+  {% file snippet getopt_main_hxx "{{self.project_name}}.h"      %}
+  {% file snippet getopt_main_cxx "{{self.project_name}}.cc"     %}
+{% endtemplate %}
+
+{% template "deep.getopt.c"      extends "automake.deep"    extends "c"   %}
+{% multiline extra_dist %}
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c \
+  vs/{{self.project_name}}.sln vs/{{self.project_name}}.vcxproj vs/{{self.project_name}}.vcxproj.filters vs/{{self.project_name}}.vcxproj.user
+{% endmultiline %}
+
+  {% file snippet getopt_main_h   "src/{{self.project_name}}.h"  %}
+  {% file snippet getopt_main_c   "src/{{self.project_name}}.c"  %}
+  {% module "vs" %}
+    {% file snippet vs_getopt_h            "vs/src/getopt.h" %}
+    {% file snippet vs_getopt_c            "vs/src/getopt.c" %}
+    {% file snippet vs_getopt_long_c       "vs/src/getopt_long.c" %}
+    {% file snippet vsproj_sln             "vs/{{self.project_name}}.sln" %}
+    {% file snippet vsproj_vcxproj         "vs/{{self.project_name}}.vcxproj" %}
+    {% file snippet vsproj_vcxproj_filters "vs/{{self.project_name}}.vcxproj.filters" %}
+    {% file snippet vsproj_vcxproj_user    "vs/{{self.project_name}}.vcxproj.user" %}
+  {% endmodule %}
+{% endtemplate %}
+
+{% template "deep.getopt.c++"    extends "automake.deep"    extends "c++" %}
+{% multiline extra_dist %}
+EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
+{% endmultiline %}
+
+  {% file snippet getopt_main_hxx "src/${self.project_name}.h"  %}
+  {% file snippet getopt_main_cxx "src/${self.project_name}.cc" %}
+  {% module "vs" %}
+    {% file snippet vs_getopt_h            "vs/src/getopt.h" %}
+    {% file snippet vs_getopt_c            "vs/src/getopt.c" %}
+    {% file snippet vs_getopt_long_c       "vs/src/getopt_long.c" %}
+    {% file snippet vsproj_sln             "vs/${self.project_name}.sln" %}
+    {% file snippet vsproj_vcxproj         "vs/${self.project_name}.vcxproj" %}
+    {% file snippet vsproj_vcxproj_filters "vs/${self.project_name}.vcxproj.filters" %}
+    {% file snippet vsproj_vcxproj_user    "vs/${self.project_name}.vcxproj.user" %}
+  {% endmodule %}
+{% endtemplate %}
+
+
+
+{% project "minimal.c"          extends "shallow.c"          %}{% endproject %}
+{% project "minimal.c++"        extends "shallow.c++"        %}{% endproject %}
+
+{% project "minimal.deep.c"     extends "deep.c"             %}{% endproject %}
+{% project "minimal.deep.c++"   extends "deep.c++"           %}{% endproject %}
+
+{% project "minimal.getopt.c"   extends "shallow.getopt.c"   %}{% endproject %}
+{% project "minimal.getopt.c++" extends "shallow.getopt.c++" %}{% endproject %}
+
+{% project "deep.getopt.c"      extends "deep.getopt.c"      %}{% endproject %}
+{% project "deep.getopt.c++"    extends "deep.getopt.c++"    %}{% endproject %}
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+   --------------------------------------------------------------------------------
+   --- BEGIN SNIPPETS
+   --------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% commment %}
+
+ --- In a way, these two snippets are the only actual C/C++ code that is relevant at all.. ☺
+
+{% endcomment %}
+
+{% snippet simple_main_c %}
+#ifndef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc,char* argv[]) {
+  return 0;
+}
+{% endsnippet %}
+
+{% snippet simple_main_cxx %}
+#ifndef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+int main(int argc,char* argv[]) {
+  return 0;
+}
+{% endsnippet %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+   --------------------------------------------------------------------------------
+   --- BEGIN GETOPT MAIN SNIPPETS
+   --------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
+
+
+
+{% snippet getopt_main_h %}
+#ifndef INCLUDED_{{ self.project_name | upcase }}_H
+#define INCLUDED_{{ self.project_name | upcase }}_H
+
+/* program options */
+struct {{ self.project_name }}_options
+{
+  int verbose;
+};
+
+#endif
+{% endsnippet %}
+{% snippet getopt_main_c %}
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include "{{self.project_name}}.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+#include <getopt.h>
+
+enum
+{
+  GETOPT_HELP_CHAR = (CHAR_MIN - 2),
+  GETOPT_VERSION_CHAR = (CHAR_MIN - 3)
+};
+
+#define GETOPT_HELP_OPTION_DECL			\
+  "help", no_argument, NULL, GETOPT_HELP_CHAR
+#define GETOPT_VERSION_OPTION_DECL \
+  "version", no_argument, NULL, GETOPT_VERSION_CHAR
+
+static struct option const long_options[] =
+  {
+    {"verbose",no_argument,NULL,'v'},
+    {GETOPT_HELP_OPTION_DECL},
+    {GETOPT_VERSION_OPTION_DECL},
+    {NULL,0,NULL,0}
+  };
+
+static void {{ self.project_name }}_options_init(struct {{ self.project_name }}_options *x) {
+  x->verbose = 0;
+}
+
+
+static void usage() {
+  printf("{{ self.project_name }} [OPTION]... SOURCE...\n\n");
+
+  printf(
+    "  -v, --verbose  explain what's being done\n"
+    "      --help     display this help and exit\n"
+    "      --version  output version information and exit\n"
+    );
+
+  printf(
+    "\n"
+    "Use this program to ... This place is used to explain the use\n"
+    "of this program in one or two simple to read paragraphs.\n"
+    "\n"
+    );
+}
+
+static void version() {
+  printf(
+    "{{ self.project_name }} (" PACKAGE_NAME ") " PACKAGE_VERSION "\n"
+    "Copyright (C) {{ std.year }} {{ identity.author }} <{{ identity.email }}>\n"
+    "Dual-Licence GPLv2+ and MIT.\n"
+    "This is free software; you are free to change and redistribute it.\n"
+    "There is NO WARANTY, to the extent permitted by law.\n"
+    );
+}
+
+
+
+int main(int argc, char* argv[]) {
+  int c;
+  struct {{ self.project_name }}_options x;
+  
+  {{ self.project_name }}_options_init(&x);
+
+  // if we just type the command, we want help.
+  if (argc == 1) {
+    usage();
+    return EXIT_SUCCESS;
+  }
+  
+  while ((c = getopt_long(argc,argv,"v",long_options, NULL)) != -1)
+    {
+      switch (c)
+	{
+	case 'v':
+	  x.verbose = 1;
+	  break;
+	  
+	case GETOPT_HELP_CHAR:
+	  usage();
+	  return EXIT_SUCCESS;
+	  
+	case GETOPT_VERSION_CHAR:
+	  version();
+	  return EXIT_SUCCESS;
+
+        case '?':
+	  return EXIT_FAILURE; // getopt_long() already printed an error message
+	  
+	default:
+	  usage();
+	  return EXIT_FAILURE;
+	}
+    }
+
+  if (argc - optind < 1)
+    {
+      printf(
+        "{{ self.project_name }}: missing file operands\n"
+        "Try '{{ self.project_name }} --help' for more information.\n"
+	);
+      return EXIT_FAILURE;
+    }
+
+  // todo: implement the program
+
+  return EXIT_SUCCESS;
+}
+{% endsnippet %}
+
+
+
+
+{% snippet getopt_main_hxx %}
+#ifndef INCLUDED_{{ self.project_name | upcase }}_H
+#define INCLUDED_{{ self.project_name | upcase }}_H
+
+/* program options */
+struct {{ self.project_name }}_options
+{
+  int verbose;
+};
+
+#endif
+{% endsnippet %}
+{% snippet getopt_main_cxx %}
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include "{{self.project_name}}.h"
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <climits>
+
+#include <getopt.h>
+
+enum
+{
+  GETOPT_HELP_CHAR = (CHAR_MIN - 2),
+  GETOPT_VERSION_CHAR = (CHAR_MIN - 3)
+};
+
+#define GETOPT_HELP_OPTION_DECL			\
+  "help", no_argument, nullptr, GETOPT_HELP_CHAR
+#define GETOPT_VERSION_OPTION_DECL \
+  "version", no_argument, nullptr, GETOPT_VERSION_CHAR
+
+static struct option const long_options[] =
+  {
+    {"verbose",no_argument,nullptr,'v'},
+    {GETOPT_HELP_OPTION_DECL},
+    {GETOPT_VERSION_OPTION_DECL},
+    {nullptr,0,nullptr,0}
+  };
+
+static void {{ self.project_name }}_options_init(struct {{ self.project_name }}_options *x) {
+  x->verbose = 0;
+}
+
+
+static void usage() {
+  std::cout << "{{ self.project_name }} [OPTION]... SOURCE...\n\n";
+
+  std::cout
+    << "  -v, --verbose  explain what's being done\n"
+    << "      --help     display this help and exit\n"
+    << "      --version  output version information and exit\n"
+    ;
+
+  std::cout << "\n";
+  std::cout << "Use this program to ... This place is used to explain the use\n";
+  std::cout << "of this program in one or two simple to read paragraphs.\n";
+  std::cout << "\n";
+}
+
+static void version() {
+  std::cout << "{{ self.project_name }} (" PACKAGE_NAME ") " PACKAGE_VERSION "\n";
+  std::cout << "Copyright (C) {{ std.year }} {{ identity.author }} <{{ identity.email }}>\n";
+  std::cout << "Licence GPLv2+\n";
+  std::cout << "This is free software; you are free to change and redistribute it.\n";
+  std::cout << "There is NO WARANTY, to the extent permitted by law.\n";
+}
+
+
+
+int main(int argc, char* argv[]) {
+  int c;
+  struct {{ project_name }}_options x;
+  
+  {{ project_name }}_options_init(&x);
+
+  // if we just type the command, we want help.
+  if (argc == 1) {
+    usage();
+    return EXIT_SUCCESS;
+  }
+  
+  while ((c = getopt_long(argc,argv,"v",long_options, NULL)) != -1)
+    {
+      switch (c)
+	{
+	case 'v':
+	  x.verbose = 1;
+	  break;
+	  
+	case GETOPT_HELP_CHAR:
+	  usage();
+	  return EXIT_SUCCESS;
+	  
+	case GETOPT_VERSION_CHAR:
+	  version();
+	  return EXIT_SUCCESS;
+
+        case '?':
+	  return EXIT_FAILURE; // getopt_long() already printed an error message
+	  
+	default:
+	  usage();
+	  return EXIT_FAILURE;
+	}
+    }
+
+  if (argc - optind < 1)
+    {
+      std::cout << "{{ self.project_name }}: missing file operands\n";
+      std::cout << "Try '{{ self.project_name }} --help' for more information.\n";
+      return EXIT_FAILURE;
+    }
+
+
+  std::vector<std::string> args(argv + optind, argv + argc);
+  auto functionality = [](std::vector<std::string> args, {{self.project_name}}_options* x){
+  };  
+  functionality(args,&x);
+
+
+  return EXIT_SUCCESS;
+}
+{% endsnippet %}
+
+
+
+
+
+
+
+{% comment %}
+   --------------------------------------------------------------------------------
+   --- END GETOPT MAIN SNIPPETS
+   --------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% commment %}
+
+ --- This manpage just tries to set the bare minimum standard of what should
+ go into it. It's content is garbage from a previous version of valornine.
+
+{% endcomment %}
+
+{% snippet manpage %}
+.TH {{ self.project_name }} 1 "{{ std.year }}"
+
+.SH NAME
+{{ self.project_name }} \- Generate files and projects from a standard template file.
+
+.SH SYNOPSIS
+THIS IS AN EXAMPLE PAGE
+
+.B {{ self.project_name }}
+[
+.B -vh
+] [
+.B -t
+.I template_file
+] [
+.B -f
+.I flavor
+] filename ...
+.PP 
+.B {{ self.project_name }}
+.B -p
+.I project
+[
+.B -t
+.I template_file
+] project_name ...
+.PP 
+.B {{ self.project_name }}
+.B -l
+[
+.B -t
+.I template_file
+]
+.PP 
+.B {{ self.project_name }}
+.B -b 
+filename ...
+.PP
+.B {{ self.project_name }}
+.B -s
+.I snippet_name
+[
+.B -t
+.I template_file
+] project_name ...
+
+.SH DESCRIPTION
+
+THIS IS AN EXAMPLE PAGE
+
+This program is used to generate individual files and entire projects from a template
+file. The advantage of using templates to generate files and projects
+is that it encourages a more uniform source code layout, and it
+obviously saves a lot of work when starting a new project.
+
+.SH OPTIONS
+.TP
+-b, --write-binary
+All input files are written as a stream of hexadecimal bytes onto
+standard output, so that they can be placed into the template file
+either as binary files or binary snippets. This mode of operation does
+not use or require any template file to be present. See the section BINARIES AND BLOBS for a more 
+detailed explanation.
+.TP
+-f FLAVOR, --flavor=FLAVOR
+Specify which flavor of template to select for a certain extension, so
+you can have a .c file with a gnu flavor or a bsd flavor or whatever
+you like.
+.TP
+-h,--help
+Display the commandline help and exit sucessfully.
+.TP
+-l,--list
+Display contents of the template file. This command does not generate any
+files or projects, even if you specify them.
+.TP
+-p PROJECT, --project=PROJECT
+Select PROJECT from the template file and generate the project under
+the name of FILE, in a directory FILE.
+.TP
+-s SNIPPET, --snippet=SNIPPET
+Prints the SNIPPET on stdout. Very useful if you have snippets for common
+code situations. A good shell alias would be: 
+.B alias snippet='sprot -s'
+.TP
+-t FILE, --template-file=FILE
+Use FILE as the template file. The default template file is ~/.default.sprot.
+.TP
+-v,--version
+This displays the version of the program. Here in the manpage there
+is more room for explaining what an option does.
+
+.SH BASIC INTRODUCTION
+Your default template file containing all the templates and projects
+is located in your home folder: ~/.default.sprot
+
+The template file consist basically of a list of files seperated by
+special commands, that will be used as template when you create an
+individual file, or a set of files as part of a project.
+
+First, how do templates work. You define a template like so:
+
+bla bla bla
+
+.SH FILE AND PROJECT STATEMENTS
+
+bla bla bla
+
+.SH VARIABLES
+
+There are two kinds of variables, built-in variables and user-defined
+variables. Variables can be used both in the %file% or %template% body
+and also in the %file% and %binary% name, like so:
+
+Because the template file is parsed in its entirely before file
+generation takes place, there is no need to define a variable before
+it is used. If you specify the same variable twice, the last of the
+two values is used.
+
+.SH SNIPPETS
+
+A snippet is a piece of code that has an identifier and that can be
+viewed as a multi-line variable. It looks like this:
+
+.nf
+snippet mysnippet%
+This is just a snippet and the year is $(year).
+end%
+.fi
+
+It can be called in %file% and %template% blocks as a normal variable,
+in the case of the example as
+.B $(mysnippet)
+
+Another important feature of sprot is the using a 'snippet alias' in
+the definition of a %file% command.
+
+.nf
+file snippet mysnippet test.cpp%
+.fi
+
+This will use snippet 'mysnippet' as the contents of the entire file,
+with variable substitution inside that snippet carried out as
+usual. Any contents of the %file% that would follow is ignored.
+
+.SH BINARIES AND BLOBS
+
+You can generate binary files with sprot, but there is no such thing
+as variable substitution with binary files. An example:
+
+.nf
+blob my_blob%
+01 02 03 ff fd 00
+end%
+
+binary file.bin%
+00 20 30
+40 12 fe
+end%
+
+binary blob my_blob my_blob.bin%
+.fi
+
+This example defines one blob (my_blob) and two binary files (file.bin and my_blob.bin).
+Binaries and blobs are written as a multiline sequence
+of hexadecimal bytes. You can enter this sequence manually, but
+usually you will generate the hexadecimal dump of an existing binary
+with the command:
+
+.nf
+sprot -b MyIcon.ico > tmp
+emacs ~/.default.sprot tmp
+.fi
+
+and use your editor to copy the contents of the temporary file into
+the sprot template file.
+
+As variable substitution does not work in binary files the only way to
+get the contents of a blob out is to use the 'blob alias' syntax in
+the %binary% command, as shown in the last line of the example
+(my_blob.bin).
+
+.SH BUGS
+
+* If you reference a blob or snippet in a %binary% or %file% alias and
+this blob or snippet does not exist, an empty file is generated and no
+warning or error is given.
+
+.SH TODO
+
+* A numerical prefix in projects could specify passes in the code
+generation stage, and a new command %zip filename.zip% could be used
+to unpack larger directory structures. Combining the two features would
+enable one to unpack a skeleton zipfile and put generated files into 
+that tree at a later pass.
+
+* Sets. A new thing to generate would be 'sets' of files, for example
+the generation of a .h and .cpp file when creating a class skeleton. This
+should be flavored as usual, to have tc/gnu/bsd type of class skeletons.
+
+* Multiple extensions, extension aliasses. Most pressing example would be
+to have .cc files as alias for .cpp templates.
+
+{% endsnippet %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% commment %}
+--------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+{% snippet "vs_build_bat" %}
+MSBuild {{self.project_name}}.sln /target:Rebuild /property:Configuration=Release /property:Platform=x64
+{% endsnippet %}
+
+
+
+{% snippet "vs_getopt_h" %}
+#ifndef __GETOPT_H__
+#define __GETOPT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern int opterr;		/* if error message should be printed */
+extern int optind;		/* index into parent argv vector */
+extern int optopt;		/* character checked for validity */
+extern int optreset;		/* reset getopt */
+extern char *optarg;		/* argument associated with option */
+
+struct option
+{
+  const char *name;
+  int has_arg;
+  int *flag;
+  int val;
+};
+
+#define no_argument       0
+#define required_argument 1
+#define optional_argument 2
+
+int getopt(int, char**, char*);
+int getopt_long(int, char**, const char*, struct option*, int*);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __GETOPT_H__ */
+{% endsnippet %}
+
+
+
+{% snippet "vs_getopt_c" %}
+#pragma warning (disable : 6011)
+
+/*	$NetBSD: getopt.c,v 1.16 1999/12/02 13:15:56 kleink Exp $	*/
+
+/*
+ * Copyright (c) 1987, 1993, 1994
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+#if 0
+static char sccsid[] = "@(#)getopt.c	8.3 (Berkeley) 4/27/95";
+#endif
+
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+#define __P(x) x
+#define _DIAGASSERT(x) assert(x)
+
+#ifdef __weak_alias
+__weak_alias(getopt,_getopt);
+#endif
+
+
+int	opterr = 1,		/* if error message should be printed */
+	optind = 1,		/* index into parent argv vector */
+	optopt,			/* character checked for validity */
+	optreset;		/* reset getopt */
+char	*optarg;		/* argument associated with option */
+
+static char * _progname __P((char *));
+int getopt_internal __P((int, char * const *, const char *));
+
+static char *
+_progname(nargv0)
+	char * nargv0;
+{
+	char * tmp;
+
+	_DIAGASSERT(nargv0 != NULL);
+
+	tmp = strrchr(nargv0, '/');
+	if (tmp)
+		tmp++;
+	else
+		tmp = nargv0;
+	return(tmp);
+}
+
+#define	BADCH	(int)'?'
+#define	BADARG	(int)':'
+#define	EMSG	""
+
+/*
+ * getopt --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt(nargc, nargv, ostr)
+	int nargc;
+	char * const nargv[];
+	const char *ostr;
+{
+	static char *__progname = 0;
+	static char *place = EMSG;		/* option letter processing */
+	char *oli;				/* option letter list index */
+        __progname = __progname?__progname:_progname(*nargv);
+
+	_DIAGASSERT(nargv != NULL);
+	_DIAGASSERT(ostr != NULL);
+
+	if (optreset || !*place) {		/* update scanning pointer */
+		optreset = 0;
+		if (optind >= nargc || *(place = nargv[optind]) != '-') {
+			place = EMSG;
+			return (-1);
+		}
+		if (place[1] && *++place == '-'	/* found "--" */
+		    && place[1] == '\0') {
+			++optind;
+			place = EMSG;
+			return (-1);
+		}
+	}					/* option letter okay? */
+	if ((optopt = (int)*place++) == (int)':' ||
+	    !(oli = strchr(ostr, optopt))) {
+		/*
+		 * if the user didn't specify '-' as an option,
+		 * assume it means -1.
+		 */
+		if (optopt == (int)'-')
+			return (-1);
+		if (!*place)
+			++optind;
+		if (opterr && *ostr != ':')
+			(void)fprintf(stderr,
+			    "%s: illegal option -- %c\n", __progname, optopt);
+		return (BADCH);
+	}
+	if (*++oli != ':') {			/* don't need argument */
+		optarg = NULL;
+		if (!*place)
+			++optind;
+	}
+	else {					/* need an argument */
+		if (*place)			/* no white space */
+			optarg = place;
+		else if (nargc <= ++optind) {	/* no arg */
+			place = EMSG;
+			if (*ostr == ':')
+				return (BADARG);
+			if (opterr)
+				(void)fprintf(stderr,
+				    "%s: option requires an argument -- %c\n",
+				    __progname, optopt);
+			return (BADCH);
+		}
+	 	else				/* white space */
+			optarg = nargv[optind];
+		place = EMSG;
+		++optind;
+	}
+	return (optopt);			/* dump back option letter */
+}
+{% endsnippet %}
+
+
+
+{% snippet "vs_getopt_long_c" %}
+#pragma warning (disable : 6011 4244 4267)
+
+/*
+ * Copyright (c) 1987, 1993, 1994, 1996
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "getopt.h"
+
+extern int	  opterr;	/* if error message should be printed */
+extern int	  optind;	/* index into parent argv vector */
+extern int	  optopt;	/* character checked for validity */
+extern int	  optreset;	/* reset getopt */
+extern char *optarg;	/* argument associated with option */
+
+#define __P(x) x
+#define _DIAGASSERT(x) assert(x)
+
+static char * __progname __P((char *));
+int getopt_internal __P((int, char * const *, const char *));
+
+static char *
+__progname(nargv0)
+	char * nargv0;
+{
+	char * tmp;
+
+	_DIAGASSERT(nargv0 != NULL);
+
+	tmp = strrchr(nargv0, '/');
+	if (tmp)
+		tmp++;
+	else
+		tmp = nargv0;
+	return(tmp);
+}
+
+#define	BADCH	(int)'?'
+#define	BADARG	(int)':'
+#define	EMSG	""
+
+/*
+ * getopt --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt_internal(nargc, nargv, ostr)
+	int nargc;
+	char * const *nargv;
+	const char *ostr;
+{
+	static char *place = EMSG;		/* option letter processing */
+	char *oli;				/* option letter list index */
+
+	_DIAGASSERT(nargv != NULL);
+	_DIAGASSERT(ostr != NULL);
+
+	if (optreset || !*place) {		/* update scanning pointer */
+		optreset = 0;
+		if (optind >= nargc || *(place = nargv[optind]) != '-') {
+			place = EMSG;
+			return (-1);
+		}
+		if (place[1] && *++place == '-') {	/* found "--" */
+			/* ++optind; */
+			place = EMSG;
+			return (-2);
+		}
+	}					/* option letter okay? */
+	if ((optopt = (int)*place++) == (int)':' ||
+	    !(oli = strchr(ostr, optopt))) {
+		/*
+		 * if the user didn't specify '-' as an option,
+		 * assume it means -1.
+		 */
+		if (optopt == (int)'-')
+			return (-1);
+		if (!*place)
+			++optind;
+		if (opterr && *ostr != ':')
+			(void)fprintf(stderr,
+			    "%s: illegal option -- %c\n", __progname(nargv[0]), optopt);
+		return (BADCH);
+	}
+	if (*++oli != ':') {			/* don't need argument */
+		optarg = NULL;
+		if (!*place)
+			++optind;
+	} else {				/* need an argument */
+		if (*place)			/* no white space */
+			optarg = place;
+		else if (nargc <= ++optind) {	/* no arg */
+			place = EMSG;
+			if ((opterr) && (*ostr != ':'))
+				(void)fprintf(stderr,
+				    "%s: option requires an argument -- %c\n",
+				    __progname(nargv[0]), optopt);
+			return (BADARG);
+		} else				/* white space */
+			optarg = nargv[optind];
+		place = EMSG;
+		++optind;
+	}
+	return (optopt);			/* dump back option letter */
+}
+
+#if 0
+/*
+ * getopt --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt2(nargc, nargv, ostr)
+	int nargc;
+	char * const *nargv;
+	const char *ostr;
+{
+	int retval;
+
+	if ((retval = getopt_internal(nargc, nargv, ostr)) == -2) {
+		retval = -1;
+		++optind; 
+	}
+	return(retval);
+}
+#endif
+
+/*
+ * getopt_long --
+ *	Parse argc/argv argument vector.
+ */
+int
+getopt_long(nargc, nargv, options, long_options, index)
+	int nargc;
+	char ** nargv;
+	const char * options;
+	struct option * long_options;
+	int * index;
+{
+	int retval;
+
+	_DIAGASSERT(nargv != NULL);
+	_DIAGASSERT(options != NULL);
+	_DIAGASSERT(long_options != NULL);
+	/* index may be NULL */
+
+	if ((retval = getopt_internal(nargc, nargv, options)) == -2) {
+		char *current_argv = nargv[optind++] + 2, *has_equal;
+		int i, current_argv_len, match = -1;
+
+		if (*current_argv == '\0') {
+			return(-1);
+		}
+		if ((has_equal = strchr(current_argv, '=')) != NULL) {
+			current_argv_len = has_equal - current_argv;
+			has_equal++;
+		} else
+			current_argv_len = strlen(current_argv);
+
+		for (i = 0; long_options[i].name; i++) { 
+			if (strncmp(current_argv, long_options[i].name, current_argv_len))
+				continue;
+
+			if (strlen(long_options[i].name) == (unsigned)current_argv_len) { 
+				match = i;
+				break;
+			}
+			if (match == -1)
+				match = i;
+		}
+		if (match != -1) {
+			if (long_options[match].has_arg == required_argument ||
+			    long_options[match].has_arg == optional_argument) {
+				if (has_equal)
+					optarg = has_equal;
+				else
+					optarg = nargv[optind++];
+			}
+			if ((long_options[match].has_arg == required_argument)
+			    && (optarg == NULL)) {
+				/*
+				 * Missing argument, leading :
+				 * indicates no error should be generated
+				 */
+				if ((opterr) && (*options != ':'))
+					(void)fprintf(stderr,
+				      "%s: option requires an argument -- %s\n",
+				      __progname(nargv[0]), current_argv);
+				return (BADARG);
+			}
+		} else { /* No matching argument */
+			if ((opterr) && (*options != ':'))
+				(void)fprintf(stderr,
+				    "%s: illegal option -- %s\n", __progname(nargv[0]), current_argv);
+			return (BADCH);
+		}
+		if (long_options[match].flag) {
+			*long_options[match].flag = long_options[match].val;
+			retval = 0;
+		} else 
+			retval = long_options[match].val;
+		if (index)
+			*index = match;
+	}
+	return(retval);
+}
+{% endsnippet %}
+
+
+
+
+
+
+
+{% commment %}
+--------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
+
+
+
+
+{% snippet vsproj_sln %}
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dirscan", "dirscan.vcxproj", "{86329F78-DAD6-4B37-8347-73C91098B4FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x64.ActiveCfg = Debug|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x64.Build.0 = Debug|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x86.ActiveCfg = Debug|Win32
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Debug|x86.Build.0 = Debug|Win32
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x64.ActiveCfg = Release|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x64.Build.0 = Release|x64
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x86.ActiveCfg = Release|Win32
+		{86329F78-DAD6-4B37-8347-73C91098B4FA}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {92189B00-4F34-4371-BBDA-F4F343E1A1BD}
+	EndGlobalSection
+EndGlobal
+{% endsnippet %}
+
+
+{% snippet vsproj_vcxproj %}
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dirscan_mt.cc" />
+    <ClCompile Include="..\src\dirscan_st.cc" />
+    <ClCompile Include="..\src\dirscan_windirstat.cc" />
+    <ClCompile Include="..\src\main.cc" />
+    <ClCompile Include="src\getopt.c" />
+    <ClCompile Include="src\getopt_long.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\dirscan.h" />
+    <ClInclude Include="src\getopt.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{86329f78-dad6-4b37-8347-73c91098b4fa}</ProjectGuid>
+    <RootNamespace>dirscan</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
+{% endsnippet %}
+
+{% snippet vsproj_vcxproj_filters %}
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getopt_long.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dirscan_mt.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dirscan_st.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dirscan_windirstat.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\getopt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dirscan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
+{% endsnippet %}
+
+{% snippet vsproj_vcxproj_user %}
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(USERPROFILE)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+</Project>
+{% endsnippet %}
+
+
+
+
+
+
+
+{% commment %}
+--------------------------------------------------------------------------------
+{% endcomment %}
+
+
+
