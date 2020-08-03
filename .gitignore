@@ -1,3 +1,5 @@
+vn2syntax.formal.h
+vn2syntax.formal.c
 *.o
 src/vn
 *.tar.gz
