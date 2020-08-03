@@ -1,4 +1,5 @@
-AM_YFLAGS = -d -t --warning=none
+#AM_YFLAGS = -d -t --warning=none
+AM_YFLAGS = -d -t
 SUBDIRS = v1 syntax
 bin_PROGRAMS = vn
 vn_CCFLAGS = --warning=none
