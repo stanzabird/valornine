@@ -5,12 +5,20 @@
 
 int yylex (void);
 void yyerror (char const *s);
+extern int yylineno;
 %}
+
+
+
 
 
 
 %token CHAR_LITERAL
 %token HEX_LITERAL
+
+
+
+
 
 /* please note that variable expansion does NOT occur at this level of parsing
  * the variables are expanded when the time comes to write the file contents. */
@@ -36,6 +44,10 @@ void yyerror (char const *s);
 %token IDENTIFIER STRING /* C-style identifier, C-style string */
 
 
+
+
+
+
  /* TOK_xxx is just keywords (keyword xxx) */
 
 %token TOK_FILE TOK_FETCH TOK_SNIPPET TOK_BINARY
@@ -51,6 +63,10 @@ void yyerror (char const *s);
 %token /*TOK_SNIPPET*/ TOK_ENDSNIPPET
 %token /*TOK_BINARY*/ TOK_ENDBINARY
 %token TOK_MODULE TOK_ENDMODULE
+%token TOK_VAR TOK_ENDVAR
+
+
+
 
 
 %%
@@ -61,9 +77,14 @@ void yyerror (char const *s);
 
 input :
   %empty
+  | stmt_var
   | stmt_project_or_template
   | stmt_snippet
   | stmt_binary
+  | input stmt_var
+  | input stmt_project_or_template
+  | input stmt_snippet
+  | input stmt_binary
   ;
 
 
@@ -138,9 +159,20 @@ stmt_module :
   ;
 
 
+stmt_var :
+  TOK_OPEN TOK_VAR IDENTIFIER TOK_CLOSE TOK_OPEN TOK_ENDVAR TOK_CLOSE
+  | TOK_OPEN TOK_VAR IDENTIFIER TOK_CLOSE var_contents TOK_OPEN TOK_ENDVAR TOK_CLOSE
+  ;
 
-
-
+var_contents :
+  CHAR_LITERAL
+  | stmt_multiline
+  | stmt_set_string
+  | stmt_set_guid
+  | var_contents stmt_multiline
+  | var_contents stmt_set_string
+  | var_contents stmt_set_guid
+  ;
 
 
 
@@ -193,6 +225,6 @@ text_contents :
 %%
 
 void yyerror (char const *s) {
-   printf("parser.y: yyerror(): %s\nExiting...\n", s);
-   exit(EXIT_FAILURE);
+  printf("parser.y: yyerror(): line %d: %s\nExiting...\n", yylineno,s);
+  exit(EXIT_FAILURE);
 }

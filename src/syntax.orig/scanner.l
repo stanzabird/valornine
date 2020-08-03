@@ -25,7 +25,6 @@ alpha		[a-fA-F]
 hextail		({digit}|{alpha}){1,2}
 hex_char	0[xX]{hextail}
 
-
 %%
 
 "---"                                           { BEGIN(vars); last_was_begin_tag = 0; return HVAL_DELIM; }
