@@ -1,4 +1,14 @@
-%{int yylex(){return 0;}char*yyfilename=0;int yyerror(){return 0;}%}
+%{
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int yylex (void);
+void yyerror (char const *s);
+%}
+
+
+
 %token CHAR_LITERAL
 %token HEX_LITERAL
 
@@ -50,6 +60,7 @@
 
 
 input :
+  %empty
   | stmt_project_or_template
   | stmt_snippet
   | stmt_binary
@@ -181,3 +192,7 @@ text_contents :
 
 %%
 
+void yyerror (char const *s) {
+   printf("parser.y: yyerror(): %s\nExiting...\n", s);
+   exit(EXIT_FAILURE);
+}
