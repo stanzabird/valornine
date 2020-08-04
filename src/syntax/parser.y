@@ -137,8 +137,8 @@ extends_list :
   ;
 
 stmt_exec :
-  TOK_OPEN TOK_EXEC TOK_CLOSE content_exec TOK_OPEN TOK_ENDEXEC TOK_CLOSE
   TOK_OPEN TOK_EXEC TOK_CLOSE TOK_OPEN TOK_ENDEXEC TOK_CLOSE
+  TOK_OPEN TOK_EXEC TOK_CLOSE content_exec TOK_OPEN TOK_ENDEXEC TOK_CLOSE
   ;
 stmt_multiline :
   TOK_OPEN TOK_MULTILINE IDENTIFIER TOK_CLOSE text_contents TOK_OPEN TOK_ENDMULTILINE TOK_CLOSE
@@ -165,8 +165,7 @@ stmt_var :
   ;
 
 var_contents :
-  CHAR_LITERAL
-  | stmt_multiline
+   stmt_multiline
   | stmt_set_string
   | stmt_set_guid
   | var_contents stmt_multiline

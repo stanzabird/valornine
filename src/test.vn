@@ -8,12 +8,16 @@
 {% string gitname "stanzabird" %}
 {% endvar %}
 
+{%project"tmp"%}{%file"tmp"%}{%endfile%}{%endproject%}
 
 {%comment%} Some more utf8 testing... {%endcomment%}
 {% project "smiley" %}
 {%file"☺"%}
 a
-☺[{{identity.author}}]☺
+[{{identity.author}}]
+
+-☺[{{identity.author}}]☺
+
 {%endfile%}
 {%exec%}
 #
