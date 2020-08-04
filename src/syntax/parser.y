@@ -18,8 +18,6 @@ extern int yylineno;
 
 
 
-
-
 /* please note that variable expansion does NOT occur at this level of parsing
  * the variables are expanded when the time comes to write the file contents. */
 
@@ -41,6 +39,7 @@ extern int yylineno;
 
  /* "{%" and "%}" */
 %token TOK_OPEN TOK_CLOSE
+
 %token IDENTIFIER STRING /* C-style identifier, C-style string */
 
 
