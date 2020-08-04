@@ -1,13 +1,9 @@
 %{
 #include "parser.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 %}
-
-
-
 
 /* an identifier */
 DIGIT        [0-9]
@@ -15,30 +11,25 @@ LETTER       [a-zA-Z]
 IDENTLETTER  ({LETTER}|_)
 IDENT        {IDENTLETTER}({IDENTLETTER}|{DIGIT})*
 
-
 digit		[0-9]
 alpha		[a-fA-F]
 hextail		({digit}|{alpha}){1,2}
 hex_char	0[xX]{hextail}
-ws              [ \t]+
-str             \"([^\\\"]|\\.)*\"
+
+ws     [ \t]+
+str    \"([^\\\"]|\\.)*\"
 /* this is c-like strings, idents and whitespace. */
-open "{%"
-close "%}"
+open   "{%"
+close  "%}"
 
 %x comment lang
+
 %%
-
-
 
 {open}{ws}*"comment"{ws}*{close}              { BEGIN(comment); }
 <comment>{open}{ws}*"endcomment"{ws}*{close}  { BEGIN(INITIAL); }
 <comment>"\n"                                 { ++yylineno; }
 <comment>.                                    { }
-
-
-
-
 
 {open}                 { BEGIN(lang);     return TOK_OPEN;  }
 <lang>{close}          { BEGIN(INITIAL);  return TOK_CLOSE; }
@@ -69,13 +60,9 @@ close "%}"
 <lang>{str}            { return STRING; }
 <lang>{ws}             { }
 
-
-"\n" { ++yylineno; }
-.                { /*return CHAR_LITERAL; */}
-
-
-
+"\n"    { ++yylineno; }
+.       { }
 
 %%
-int yywrap() { return 1; }
 
+int yywrap() { return 1; }

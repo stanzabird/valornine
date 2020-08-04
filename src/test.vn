@@ -6,6 +6,7 @@
 {% string author "Bert van der Weerd ☺" %}
 {% string email "bert@stanzabird.nl" %}
 {% string gitname "stanzabird" %}
+{% guid proj_guid1 %}
 {% endvar %}
 
 {%project"tmp"%}{%file"tmp"%}{%endfile%}{%endproject%}
