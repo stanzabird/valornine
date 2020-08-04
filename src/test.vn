@@ -12,13 +12,19 @@
 
 {%comment%} Some more utf8 testing... {%endcomment%}
 {% project "smiley" %}
-{%file"☺"%}
+{%file"☺"%}{%endfile%}
+{%file"whatever"%}
 a
 [{{identity.author}}]
 
 -☺[{{identity.author}}]☺
 
 {%endfile%}
+{% file fetch "crappy.txt" "https://pub.stanzabird.nl/meuk/crappy.txt" %}
+
+
+
+
 {%exec%}
 #
 # GNU Autoconf Macro Archive.
@@ -35,8 +41,15 @@ wget --output-document=m4/ax_prog_bison.m4             'http://git.savannah.gnu.
 #wget --output-document= ''
 #wget --output-document= ''
 #wget --output-document= ''
-{%endexec	%}
-{% file wget "crappy.txt" "https://pub.stanzabird.nl/meuk/crappy.txt" %}
+{%endexec%}
+
+
+
+
+
+
+
+
 {%endproject%}
 
 
@@ -44,6 +57,17 @@ wget --output-document=m4/ax_prog_bison.m4             'http://git.savannah.gnu.
 
 
 {% comment %}
+
+
+
+
+
+
+
+
+
+
+
 
   This project "minimal.gtk4.c" shows possible things to do
   in the future, perhaps gtk4 with gtkglarea+opengl-es/vulkan.
@@ -174,7 +198,7 @@ AC_OUTPUT
 {% multiline ac_config_files %}
 AC_CONFIG_FILES(Makefile)
 {% endmultiline %}
-{% mutiline ac_config_srcdir %}
+{% multiline ac_config_srcdir %}
 AC_CONFIG_SRCDIR({{ self.project_name }}{{ self.src_ext }})
 {% endmultiline %}
 {% file "Makefile.am" %}
@@ -203,7 +227,7 @@ EXTRA_DIST = $(man_MANS)
 {% multiline ac_config_files %}
 AC_CONFIG_FILES(Makefile src/Makefile)
 {% endmultiline %}
-{% mutiline ac_config_srcdir %}
+{% multiline ac_config_srcdir %}
 AC_CONFIG_SRCDIR(src/{{ self.project_name }}{{ self.src_ext }})
 {% endmultiline %}
 {% file "Makefile.am" %}
@@ -249,15 +273,15 @@ EXTRA_DIST = $(man_MANS)
 
 
 {% template "c" %}
-{% instance src_ext ".c" %}
-{% instance multiline compiler_prog %}
+{% string src_ext ".c" %}
+{% multiline compiler_prog %}
 AC_PROG_CC
 {% endmultiline %}
 {% endtemplate %}
 
 {% template "c++" %}
-{% instance src_ext ".cc" %}
-{% instance multiline compiler_prog %}
+{% string src_ext ".cc" %}
+{% multiline compiler_prog %}
 AC_PROG_CXX
 {% endmultiline %}
 {% endtemplate %}
@@ -298,7 +322,7 @@ EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c \
 
   {% file snippet getopt_main_h   "src/{{self.project_name}}.h"  %}
   {% file snippet getopt_main_c   "src/{{self.project_name}}.c"  %}
-  {% module "vs" %}
+  {% module vs %}
     {% file snippet vs_getopt_h            "vs/src/getopt.h" %}
     {% file snippet vs_getopt_c            "vs/src/getopt.c" %}
     {% file snippet vs_getopt_long_c       "vs/src/getopt_long.c" %}
@@ -316,7 +340,7 @@ EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
 
   {% file snippet getopt_main_hxx "src/${self.project_name}.h"  %}
   {% file snippet getopt_main_cxx "src/${self.project_name}.cc" %}
-  {% module "vs" %}
+  {% module vs %}
     {% file snippet vs_getopt_h            "vs/src/getopt.h" %}
     {% file snippet vs_getopt_c            "vs/src/getopt.c" %}
     {% file snippet vs_getopt_long_c       "vs/src/getopt_long.c" %}
@@ -374,7 +398,7 @@ EXTRA_DIST = vs/build.bat vs/src/getopt.h vs/src/getopt.c vs/src/getopt_long.c
 
 
 
-{% commment %}
+{% comment %}
 
  --- In a way, these two snippets are the only actual C/C++ code that is relevant at all.. ☺
 
@@ -733,7 +757,7 @@ int main(int argc, char* argv[]) {
 
 
 
-{% commment %}
+{% comment %}
 
  --- This manpage just tries to set the bare minimum standard of what should
  go into it. It's content is garbage from a previous version of valornine.
@@ -958,19 +982,19 @@ to have .cc files as alias for .cpp templates.
 
 
 
-{% commment %}
+{% comment %}
 --------------------------------------------------------------------------------
 {% endcomment %}
 
 
 
-{% snippet "vs_build_bat" %}
+{% snippet vs_build_bat %}
 MSBuild {{self.project_name}}.sln /target:Rebuild /property:Configuration=Release /property:Platform=x64
 {% endsnippet %}
 
 
 
-{% snippet "vs_getopt_h" %}
+{% snippet vs_getopt_h %}
 #ifndef __GETOPT_H__
 #define __GETOPT_H__
 
@@ -1008,7 +1032,7 @@ int getopt_long(int, char**, const char*, struct option*, int*);
 
 
 
-{% snippet "vs_getopt_c" %}
+{% snippet vs_getopt_c %}
 #pragma warning (disable : 6011)
 
 /*	$NetBSD: getopt.c,v 1.16 1999/12/02 13:15:56 kleink Exp $	*/
@@ -1167,7 +1191,7 @@ getopt(nargc, nargv, ostr)
 
 
 
-{% snippet "vs_getopt_long_c" %}
+{% snippet vs_getopt_long_c %}
 #pragma warning (disable : 6011 4244 4267)
 
 /*
@@ -1414,7 +1438,7 @@ getopt_long(nargc, nargv, options, long_options, index)
 
 
 
-{% commment %}
+{% comment %}
 --------------------------------------------------------------------------------
 {% endcomment %}
 
@@ -1710,9 +1734,13 @@ EndGlobal
 
 
 
-{% commment %}
+{% comment %}
 --------------------------------------------------------------------------------
 {% endcomment %}
 
 
 
+
+{% snippet shithole %}
+{% exec %}ls -1{% endexec %}
+{% endsnippet %}

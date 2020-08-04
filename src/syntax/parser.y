@@ -138,7 +138,7 @@ extends_list :
 
 stmt_exec :
   TOK_OPEN TOK_EXEC TOK_CLOSE TOK_OPEN TOK_ENDEXEC TOK_CLOSE
-  TOK_OPEN TOK_EXEC TOK_CLOSE content_exec TOK_OPEN TOK_ENDEXEC TOK_CLOSE
+  | TOK_OPEN TOK_EXEC TOK_CLOSE content_exec TOK_OPEN TOK_ENDEXEC TOK_CLOSE
   ;
 stmt_multiline :
   TOK_OPEN TOK_MULTILINE IDENTIFIER TOK_CLOSE text_contents TOK_OPEN TOK_ENDMULTILINE TOK_CLOSE
@@ -191,6 +191,17 @@ content_project_or_template :
   | stmt_exec /* git init statements could go here... */
   | stmt_multiline
   | stmt_project_or_template_module
+    
+  /* lists of these statements... */
+  | content_project_or_template stmt_file_fetch
+  | content_project_or_template stmt_file_snippet
+  | content_project_or_template stmt_file_binary
+  | content_project_or_template stmt_set_string
+  | content_project_or_template stmt_set_guid
+  | content_project_or_template stmt_file
+  | content_project_or_template stmt_exec
+  | content_project_or_template stmt_multiline
+  | content_project_or_template stmt_project_or_template_module
   ;
 
 stmt_project_or_template_module :
